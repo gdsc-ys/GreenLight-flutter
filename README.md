@@ -2,15 +2,16 @@
 
 A new Flutter project.
 
-## Getting Started
+lib/ <- 이 안에서 수정 하면 됨
 
-This project is a starting point for a Flutter application.
+-- models/ <- 데이터를 특정 자료구조로 만들 때 쓸 디렉토리
 
-A few resources to get you started if this is your first Flutter project:
+-- services/ <- firebase 기능 이용하는 파일 screens 쪽에서 import해서 사용
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+-- screens/ <-- 종류에 따라 위젯을 담음
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---- authenticate/ <- 로그인/회원가입 위젯
+
+---- home/ 홈, 피드, 맵, 그룹 관련 위젯
+
+---- shared/ 다른 위젯에서 쓸 이너 위젯 ex) loading 뷰
