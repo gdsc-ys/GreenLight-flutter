@@ -17,8 +17,6 @@ double calculateDistance(lat1, lng1, lat2, lng2) {
   }
 }
 
-
-
 /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 /*::  This function converts decimal degrees to radians             :*/
 /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/

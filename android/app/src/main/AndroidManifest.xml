@@ -1,13 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.green_light">
-   <application
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <application
         android:label="green_light"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBnxFXo7X-P6hQuTI_73IG_QpABwf9F4jI" />
+            android:value="AIzaSyCpYm_gw8ohOW9Jastj30VYB3mRM5Ejj7Y" />
 
         <activity
             android:name=".MainActivity"
