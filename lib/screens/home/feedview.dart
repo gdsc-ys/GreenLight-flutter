@@ -26,6 +26,7 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: Drawer(),
       body: Container(
         decoration: BoxDecoration(
           color: Color(0xffFFFFFF),
@@ -45,13 +46,19 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
 }
 
 Widget _buildFeedTop1() {
-  return IconButton(
-    iconSize: 30,
-    padding: EdgeInsets.only(top: 50, left: 350),
-    constraints: BoxConstraints(),
-    onPressed: () {},
-    icon: Icon(Icons.menu),
-    color: Color(0xff8C939B),
+  return Builder(
+    builder: (context) {
+      return IconButton(
+        iconSize: 30,
+        padding: EdgeInsets.only(top: 50, left: 350),
+        constraints: BoxConstraints(),
+        onPressed: () {
+          Scaffold.of(context).openEndDrawer();
+        },
+        icon: Icon(Icons.menu),
+        color: Color(0xff8C939B),
+      );
+    },
   );
 }
 

@@ -7,6 +7,7 @@ import 'package:green_light/screens/authenticate/authenticate.dart';
 import 'package:green_light/screens/wrapper.dart';
 import 'package:green_light/services/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,12 +36,20 @@ class MyApp extends StatelessWidget {
     //   ),
     // );
 
-    return StreamProvider<GL_User?>.value(
-      initialData: null,
-      value: AuthService().user,
-      child: MaterialApp(
-        home: Wrapper(),
-      ),
+    return ScreenUtilInit(
+      designSize: Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return StreamProvider<GL_User?>.value(
+          initialData: null,
+          value: AuthService().user,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Wrapper(),
+          ),
+        );
+      },
     );
   }
 }

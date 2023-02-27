@@ -80,7 +80,9 @@ class _HomeState extends State<Home> {
               TextButton.icon(
                 onPressed: () async {
                   await _auth.signOut();
-                }, icon: Icon(Icons.person, color: Colors.white,), label: Text('Logout', style: TextStyle(color: Colors.white),)
+                },
+                  icon: Icon(Icons.person, color: Colors.white,),
+                  label: Text('Logout', style: TextStyle(color: Colors.white),)
               ),
             ],
           ),
@@ -88,8 +90,8 @@ class _HomeState extends State<Home> {
             decoration: BoxDecoration(
             boxShadow: <BoxShadow> [
               BoxShadow(
-                color: Color(0xffD3D3D3),
-                blurRadius: 25.0,
+                color: Color(0xffDFDFDF),
+                blurRadius: 13.0,
                 offset: Offset(0.0, 2),
               ),
             ],
@@ -108,7 +110,7 @@ class _HomeState extends State<Home> {
                     label: 'Home',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.dynamic_feed),
+                    icon: Icon(Icons.dynamic_feed_sharp),
                     label: 'Feed',
                   ),
                   BottomNavigationBarItem(
@@ -121,10 +123,10 @@ class _HomeState extends State<Home> {
                   ),
                 ],
                 currentIndex: _selectedIndex,
-                selectedLabelStyle: TextStyle(color: Colors.green),
-                selectedItemColor: Colors.green,
-                unselectedItemColor: Colors.grey,
-                unselectedLabelStyle: TextStyle(color: Colors.grey),
+                selectedLabelStyle: TextStyle(color: Color(0xff5DC86C),),
+                selectedItemColor: Color(0xff5DC86C),
+                unselectedItemColor: Color(0xff8C939B),
+                unselectedLabelStyle: TextStyle(color: Color(0xff8C939B),),
                 showUnselectedLabels: true,
                 onTap: _onItemTapped,
                 type: BottomNavigationBarType.fixed,

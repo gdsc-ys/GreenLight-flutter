@@ -45,6 +45,10 @@ dependencies:
   permission_handler: ^10.2.0
   fluttertoast: ^8.0.8
   location: ^4.4.0
+  flutter_screenutil: ^5.6.1
+  camera:
+  path:
+  path_provider:
 
 dev_dependencies:
   flutter_test:

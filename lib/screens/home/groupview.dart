@@ -6,13 +6,20 @@ class GroupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          _buildGroupTop1(),
-          _buildGroupTop2(),
-          _buildGroupSchedule(),
-          _buildGroupMembers(),
-        ],
+      endDrawer: Drawer(),
+      body: Container(
+        decoration: BoxDecoration(
+          color: Color(0xffF2F3F5),
+        ),
+        child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            _buildGroupTop1(),
+            _buildGroupTop2(),
+            _buildGroupSchedule(),
+            _buildGroupMembers(),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff5DC86C),
@@ -25,26 +32,32 @@ class GroupPage extends StatelessWidget {
 }
 
 Widget _buildGroupTop1() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.end,
-    children: <Widget>[
-      IconButton(
-        iconSize: 30,
-        padding: EdgeInsets.only(top: 40, right: 10),
-        constraints: BoxConstraints(),
-        onPressed: () {},
-        icon: Icon(Icons.search),
-        color: Color(0xff8C939B),
-      ),
-      IconButton(
-        iconSize: 30,
-        padding: EdgeInsets.only(top: 40, right: 24),
-        constraints: BoxConstraints(),
-        onPressed: () {},
-        icon: Icon(Icons.menu),
-        color: Color(0xff8C939B),
-      ),
-    ],
+  return Builder(
+    builder: (context) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          IconButton(
+            iconSize: 30,
+            padding: EdgeInsets.only(top: 40, right: 10),
+            constraints: BoxConstraints(),
+            onPressed: () {},
+            icon: Icon(Icons.search),
+            color: Color(0xff8C939B),
+          ),
+          IconButton(
+            iconSize: 30,
+            padding: EdgeInsets.only(top: 40, right: 24),
+            constraints: BoxConstraints(),
+            onPressed: () {
+              Scaffold.of(context).openEndDrawer();
+            },
+            icon: Icon(Icons.menu),
+            color: Color(0xff8C939B),
+          ),
+        ],
+      );
+    },
   );
 }
 
@@ -243,5 +256,4 @@ Widget _buildGroupMembers() {
       ),
     ),
   );
-
 }

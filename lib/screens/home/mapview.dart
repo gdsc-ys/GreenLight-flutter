@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:green_light/screens/home/cameraview.dart';
 import 'package:green_light/services/location.dart';
 import 'package:green_light/services/permission.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -72,9 +73,11 @@ class _MapViewState extends State<MapView> {
   Widget build(BuildContext context) {
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: GoogleMap(
           myLocationEnabled: true,
+          myLocationButtonEnabled: false,
           mapToolbarEnabled: false,
           markers: _showMarkers,
           onMapCreated: _onMapCreated,
@@ -83,6 +86,22 @@ class _MapViewState extends State<MapView> {
             target: _center,
             zoom: 18.0,
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          heroTag: 'cameraBtn',
+          backgroundColor: Color(0xff5DC86C),
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CameraView(),
+              ),
+            );
+          },
+          // onPressed: () async {
+          //   await availableCameras().then((value) => Navigator.push(context,
+          //       MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
+          // },
         ),
       ),
     );
