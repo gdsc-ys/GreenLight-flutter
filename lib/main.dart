@@ -1,9 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:green_light/firebase_options.dart';
-import 'package:green_light/models/map.dart';
 import 'package:green_light/models/user.dart';
-import 'package:green_light/screens/authenticate/authenticate.dart';
 import 'package:green_light/screens/wrapper.dart';
 import 'package:green_light/services/auth.dart';
 import 'package:provider/provider.dart';
@@ -37,14 +35,14 @@ class MyApp extends StatelessWidget {
     // );
 
     return ScreenUtilInit(
-      designSize: Size(390, 844),
+      designSize: const Size(390, 844),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
         return StreamProvider<GL_User?>.value(
           initialData: null,
           value: AuthService().user,
-          child: MaterialApp(
+          child: const MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Wrapper(),
           ),

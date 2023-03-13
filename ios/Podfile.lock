@@ -806,7 +806,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
-  camera_avfoundation: 82dc5597033fe2dcdcca6e41f7e464d0855e74ad
+  camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   cloud_firestore: 94326bb743acbfe43c68f933dab8a094e84d5849
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
   firebase_auth: 4e8c693e848ed13b263de2d702d55fa82ed04a79
@@ -817,7 +817,7 @@ SPEC CHECKSUMS:
   FirebaseFirestore: 244f71ff14ef44f39e00b44d356eac708ce03103
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   fluttertoast: eb263d302cc92e04176c053d2385237e9f43fad0
-  google_maps_flutter_ios: 53f75334bad87ccd0473f4b0142756169846b42b
+  google_maps_flutter_ios: 3e0b99383a8003b8169d06e7e324170bd0424105
   GoogleMaps: 025272d5876d3b32604e5c080dc25eaf68764693
   GoogleUtilities: c2bdc4cf2ce786c4d2e6b3bcfd599a25ca78f06f
   "gRPC-C++": 9675f953ace2b3de7c506039d77be1f2e77a8db2

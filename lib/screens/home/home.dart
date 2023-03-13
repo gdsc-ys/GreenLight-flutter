@@ -25,10 +25,10 @@ class _HomeState extends State<Home> {
 
   // 언더바로 4개의 컨테츠 제공하는 코드
   final List<Widget> _widgetOptions = <Widget>[
-    HomeView(),
-    FeedPage(),
+    const HomeView(),
+    const FeedPage(),
     MapView(showMarkers: markers),
-    GroupPage(),
+    const GroupPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -39,12 +39,12 @@ class _HomeState extends State<Home> {
 
   static Future<Set<Marker>> get markers async {
     var db = FirebaseFirestore.instance;
-    Set<Marker> _showMarkers = {};
+    Set<Marker> showMarkers = {};
     QuerySnapshot<Map<String, dynamic>> garbages = await db.collection('garbages2').get();
 
     for (int i = 0; i < garbages.size; i++){
       print(garbages.docs[i]['name']);
-      _showMarkers.add(
+      showMarkers.add(
         Marker(
           markerId: MarkerId(garbages.docs[i]['name']),
           position: LatLng(garbages.docs[i]['lat'], garbages.docs[i]['lng']),
@@ -52,7 +52,7 @@ class _HomeState extends State<Home> {
       );
     }
 
-    return _showMarkers;
+    return showMarkers;
   }
 
   int _selectedIndex = 0;
@@ -73,7 +73,7 @@ class _HomeState extends State<Home> {
           ),
           backgroundColor: Colors.lightGreenAccent[50],
           appBar: AppBar(
-            title: Text('Green Light'),
+            title: const Text('Green Light'),
             backgroundColor: Colors.lightGreenAccent[400],
             elevation: 0.0,
             actions: <Widget>[
@@ -81,13 +81,13 @@ class _HomeState extends State<Home> {
                 onPressed: () async {
                   await _auth.signOut();
                 },
-                  icon: Icon(Icons.person, color: Colors.white,),
-                  label: Text('Logout', style: TextStyle(color: Colors.white),)
+                  icon: const Icon(Icons.person, color: Colors.white,),
+                  label: const Text('Logout', style: TextStyle(color: Colors.white),)
               ),
             ],
           ),
           bottomNavigationBar: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
             boxShadow: <BoxShadow> [
               BoxShadow(
                 color: Color(0xffDFDFDF),
@@ -97,7 +97,7 @@ class _HomeState extends State<Home> {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(25.0),
               topRight: Radius.circular(25.0),
             ),
@@ -123,10 +123,10 @@ class _HomeState extends State<Home> {
                   ),
                 ],
                 currentIndex: _selectedIndex,
-                selectedLabelStyle: TextStyle(color: Color(0xff5DC86C),),
-                selectedItemColor: Color(0xff5DC86C),
-                unselectedItemColor: Color(0xff8C939B),
-                unselectedLabelStyle: TextStyle(color: Color(0xff8C939B),),
+                selectedLabelStyle: const TextStyle(color: Color(0xff5DC86C),),
+                selectedItemColor: const Color(0xff5DC86C),
+                unselectedItemColor: const Color(0xff8C939B),
+                unselectedLabelStyle: const TextStyle(color: Color(0xff8C939B),),
                 showUnselectedLabels: true,
                 onTap: _onItemTapped,
                 type: BottomNavigationBarType.fixed,

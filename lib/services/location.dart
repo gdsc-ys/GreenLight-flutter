@@ -24,26 +24,26 @@ class LocationService {
       LocationData? locationData;
       await location.changeSettings(accuracy: LocationAccuracy.high);
       try {
-        var _hasLocationPermission = await location.hasPermission();
+        var hasLocationPermission = await location.hasPermission();
 
-        if (_hasLocationPermission == PermissionStatus.granted) {
+        if (hasLocationPermission == PermissionStatus.granted) {
           grantedPermissionMethod(
             context, 
             locationData,
             updatePosition: updatePosition);
-        } else if (_hasLocationPermission == PermissionStatus.denied) {
-          var _permissionGranted = await location.requestPermission();
-          if (_permissionGranted == PermissionStatus.granted) {
+        } else if (hasLocationPermission == PermissionStatus.denied) {
+          var permissionGranted = await location.requestPermission();
+          if (permissionGranted == PermissionStatus.granted) {
             grantedPermissionMethod(
               context, 
               locationData, 
               updatePosition: updatePosition);
-          } else if (_permissionGranted == PermissionStatus.denied) {
+          } else if (permissionGranted == PermissionStatus.denied) {
             serviceDisabledMethod(context);
           }
         }
       } on PlatformException catch(e) {
-        debugPrint("${e.code}");
+        debugPrint(e.code);
       }
     }
 
@@ -52,15 +52,15 @@ class LocationService {
       LocationData? locationData,
       {Function? updatePosition}
     ) async {
-      var _hasLocationServiceEnabled = await location.serviceEnabled();
-      if (_hasLocationServiceEnabled) {
+      var hasLocationServiceEnabled = await location.serviceEnabled();
+      if (hasLocationServiceEnabled) {
         serviceEnabledMethod(
           context, 
           locationData,
           updatePosition: updatePosition);
       } else {
-        var _serviceEnabled = await location.requestService();
-        if (_serviceEnabled) {
+        var serviceEnabled = await location.requestService();
+        if (serviceEnabled) {
           serviceEnabledMethod(
             context, 
             locationData, 

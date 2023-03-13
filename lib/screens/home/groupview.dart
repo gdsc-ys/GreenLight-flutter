@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:green_light/screens/home/drawerview.dart';
 
 class GroupPage extends StatelessWidget {
   const GroupPage({Key? key}) : super(key: key);
@@ -6,9 +8,9 @@ class GroupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: Drawer(),
+      endDrawer: const DrawerView(),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xffF2F3F5),
         ),
         child: Column(
@@ -22,8 +24,8 @@ class GroupPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff5DC86C),
-        child: Icon(Icons.add),
+        backgroundColor: const Color(0xff5DC86C),
+        child: const Icon(Icons.add),
         onPressed: () {},
       ),
     );
@@ -37,23 +39,27 @@ Widget _buildGroupTop1() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          IconButton(
-            iconSize: 30,
-            padding: EdgeInsets.only(top: 40, right: 10),
-            constraints: BoxConstraints(),
-            onPressed: () {},
-            icon: Icon(Icons.search),
-            color: Color(0xff8C939B),
+          Container(
+            margin: EdgeInsets.only(top: 18.h),
+            child: IconButton(
+              iconSize: 30,
+              constraints: const BoxConstraints(),
+              onPressed: () {},
+              icon: const Icon(Icons.search),
+              color: const Color(0xff8C939B),
+            ),
           ),
-          IconButton(
-            iconSize: 30,
-            padding: EdgeInsets.only(top: 40, right: 24),
-            constraints: BoxConstraints(),
-            onPressed: () {
-              Scaffold.of(context).openEndDrawer();
-            },
-            icon: Icon(Icons.menu),
-            color: Color(0xff8C939B),
+          Container(
+            margin: EdgeInsets.only(top: 18.h, right: 12.w),
+            child: IconButton(
+              iconSize: 30,
+              constraints: const BoxConstraints(),
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+              icon: const Icon(Icons.menu),
+              color: const Color(0xff8C939B),
+            ),
           ),
         ],
       );
@@ -64,8 +70,8 @@ Widget _buildGroupTop1() {
 Widget _buildGroupTop2() {
   return Container(
     alignment: Alignment.centerLeft,
-    margin: EdgeInsets.only(left: 24),
-    child: Text(
+    margin: EdgeInsets.only(left: 24.w),
+    child: const Text(
       'Group',
       style: TextStyle(
         fontSize: 24,
@@ -79,8 +85,8 @@ Widget _buildGroupTop2() {
 
 Widget _buildGroupSchedule() {
   return Container(
-    margin: EdgeInsets.only(top: 5, bottom: 10),
-    decoration: BoxDecoration(
+    margin: EdgeInsets.only(top: 9.h, bottom: 10.h),
+    decoration: const BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(20.0)),
       color: Color(0xffFFFFFF),
       boxShadow: <BoxShadow> [
@@ -91,13 +97,14 @@ Widget _buildGroupSchedule() {
         ),
       ],
     ),
-    width: 390,
-    height: 101,
+    width: 342.w,
+    height: 101.h,
     child: Column(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(right: 270, top: 21, bottom: 10),
-          child: Text(
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.only(left: 15.w, top: 21.h, bottom: 10.h),
+          child: const Text(
             'Schedule',
             style: TextStyle(
               fontSize: 16,
@@ -109,9 +116,10 @@ Widget _buildGroupSchedule() {
         Row(
           children: <Widget>[
             Container(
-              width: 200,
-              margin: EdgeInsets.only(left: 15, right: 70),
-              child: Text(
+              alignment: Alignment.centerLeft,
+              width: 175.w,
+              margin: EdgeInsets.only(left: 15.w, right: 70.w),
+              child: const Text(
                 'We have an activity scheduled in three days!',
                 style: TextStyle(
                   fontSize: 16,
@@ -121,9 +129,10 @@ Widget _buildGroupSchedule() {
               ),
             ),
             Container(
-              width: 80,
-              margin: EdgeInsets.only(left: 20),
-              child: Text(
+              width: 73.w,
+              alignment: Alignment.centerRight,
+              margin: EdgeInsets.only(right: 9.w),
+              child: const Text(
                 '03.02',
                 style: TextStyle(
                   fontSize: 28,
@@ -144,14 +153,14 @@ Widget _buildGroupMembers() {
     child: SizedBox(
       height: 500,
       child: GridView.count(
-        padding: EdgeInsets.only(top: 30),
+        padding: EdgeInsets.only(top: 13.h, left: 18.w, right: 18.w),
         scrollDirection: Axis.vertical,
-        physics: ScrollPhysics(),
+        physics: const ScrollPhysics(),
         shrinkWrap: true,
         crossAxisCount: 2,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
               color: Color(0xffFFFFFF),
               boxShadow: <BoxShadow> [
@@ -162,13 +171,11 @@ Widget _buildGroupMembers() {
                 ),
               ],
             ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 24, bottom: 30),
-            child: Text('first'),
+            margin: EdgeInsets.only(top: 6.h, bottom: 6.h, left: 6.w, right: 6.w),
+            child: const Text('first'),
           ),
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
               color: Color(0xffFFFFFF),
               boxShadow: <BoxShadow> [
@@ -179,13 +186,11 @@ Widget _buildGroupMembers() {
                 ),
               ],
             ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 12, bottom: 30, right: 24),
-            child: Text('first'),
+            margin: EdgeInsets.only(top: 6.h, bottom: 6.h, left: 6.w, right: 6.w),
+            child: const Text('first'),
           ),
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
               color: Color(0xffFFFFFF),
               boxShadow: <BoxShadow> [
@@ -196,13 +201,11 @@ Widget _buildGroupMembers() {
                 ),
               ],
             ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 24, bottom: 30),
-            child: Text('first'),
+            margin: EdgeInsets.only(top: 6.h, bottom: 6.h, left: 6.w, right: 6.w),
+            child: const Text('first'),
           ),
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
               color: Color(0xffFFFFFF),
               boxShadow: <BoxShadow> [
@@ -213,13 +216,11 @@ Widget _buildGroupMembers() {
                 ),
               ],
             ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 12, bottom: 30, right: 24),
-            child: Text('first'),
+            margin: EdgeInsets.only(top: 6.h, bottom: 6.h, left: 6.h, right: 6.w),
+            child: const Text('first'),
           ),
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
               color: Color(0xffFFFFFF),
               boxShadow: <BoxShadow> [
@@ -232,11 +233,11 @@ Widget _buildGroupMembers() {
             ),
             width: 165,
             height: 165,
-            margin: EdgeInsets.only(left: 24, bottom: 30),
-            child: Text('first'),
+            margin: EdgeInsets.only(top: 6.h, bottom: 6.h, left: 6.w, right: 6.h),
+            child: const Text('first'),
           ),
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
               color: Color(0xffFFFFFF),
               boxShadow: <BoxShadow> [
@@ -249,8 +250,8 @@ Widget _buildGroupMembers() {
             ),
             width: 165,
             height: 165,
-            margin: EdgeInsets.only(left: 12, bottom: 30, right: 24),
-            child: Text('first'),
+            margin: EdgeInsets.only(top: 6.h, bottom: 6.h, left: 6.h, right: 6.w),
+            child: const Text('first'),
           ),
         ],
       ),

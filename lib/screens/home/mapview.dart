@@ -25,7 +25,7 @@ class _MapViewState extends State<MapView> {
 
   String _mapStyle = "";
 
-  LatLng _center = LatLng(45.521563, -122.677433);
+  final LatLng _center = const LatLng(45.521563, -122.677433);
 
   void _onMapCreated(GoogleMapController controller) async {
     _mapController = controller;
@@ -89,12 +89,12 @@ class _MapViewState extends State<MapView> {
         ),
         floatingActionButton: FloatingActionButton(
           heroTag: 'cameraBtn',
-          backgroundColor: Color(0xff5DC86C),
-          child: Icon(Icons.add),
+          backgroundColor: const Color(0xff5DC86C),
+          child: const Icon(Icons.add),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CameraView(),
+              MaterialPageRoute(builder: (context) => const CameraView(),
               ),
             );
           },

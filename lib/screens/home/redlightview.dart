@@ -28,17 +28,14 @@ class _RedLightViewState extends State<RedLightView> {
         elevation: 0,
         leading: IconButton(
           padding: EdgeInsets.only(left: 24.w),
-          icon: Icon(Icons.arrow_back_ios),
-          color: Color(0xff8C939B),
+          icon: const Icon(Icons.arrow_back_ios),
+          color: const Color(0xff8C939B),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        // iconTheme: IconThemeData(
-        //   color: Color(0xff8C939B),
-        // ),
-        backgroundColor: Color(0xffFFFFFF),
-        title: Text(
+        backgroundColor: const Color(0xffFFFFFF),
+        title: const Text(
           'Red Light Notification',
           style: TextStyle(
               fontWeight: FontWeight.w500,
@@ -51,7 +48,9 @@ class _RedLightViewState extends State<RedLightView> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
           child: Container(
-            decoration: BoxDecoration(
+            width: 390.w,
+            height: 844.h,
+            decoration: const BoxDecoration(
               color: Color(0xffFFFFFF),
             ),
             child: Column(
@@ -59,7 +58,7 @@ class _RedLightViewState extends State<RedLightView> {
               children: <Widget>[
                 _buildRedLightPlaceName(_placeNameController),
                 _buildRedLightMiddle(),
-                _buildRedLightGreenMessage(context, _placeNameController,
+                _buildRedLightGreenMessage(_placeNameController,
                     _greenMessageController),
               ],
             ),
@@ -70,12 +69,12 @@ class _RedLightViewState extends State<RedLightView> {
   }
 }
 
-Widget _buildRedLightPlaceName(TextEditingController _placeNameController) {
+Widget _buildRedLightPlaceName(TextEditingController placeNameController) {
   return Container(
     child: Column(
       children: <Widget>[
         _placeName(),
-        _placeInput(_placeNameController),
+        _placeInput(placeNameController),
         _myLocation(),
       ],
     ),
@@ -86,7 +85,7 @@ Widget _placeName() {
   return Container(
     alignment: Alignment.centerLeft,
     margin: EdgeInsets.only(left: 24.w, top: 30.h),
-    child: Text(
+    child: const Text(
       'Place name',
       style: TextStyle(
         fontSize: 24,
@@ -96,12 +95,12 @@ Widget _placeName() {
   );
 }
 
-Widget _placeInput(TextEditingController _placeNameController) {
+Widget _placeInput(TextEditingController placeNameController) {
   return Container(
     margin: EdgeInsets.only(top: 20.h, left: 24.w, right: 24.w),
     child: TextField(
-      controller: _placeNameController,
-      decoration: InputDecoration(
+      controller: placeNameController,
+      decoration: const InputDecoration(
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: Color(0xffF2F3F5),
@@ -124,7 +123,7 @@ Widget _myLocation() {
     width: 342.w,
     height: 48.h,
     margin: EdgeInsets.only(top: 31.h),
-    decoration: BoxDecoration(
+    decoration: const BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(12.0)),
       color: Color(0xffFFFFFF),
       boxShadow: <BoxShadow> [
@@ -141,7 +140,7 @@ Widget _myLocation() {
           margin: EdgeInsets.only(top: 3.h, left: 14.w),
           child: Transform.rotate(
             angle: radian,
-            child: Icon(
+            child: const Icon(
               Icons.near_me,
               size: 30,
               color: Color(0xffE6726C),
@@ -150,8 +149,8 @@ Widget _myLocation() {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(left: 6.8),
-          child: Text(
+          margin: const EdgeInsets.only(left: 6.8),
+          child: const Text(
             '내 위치:',
             style: TextStyle(
               fontSize: 16,
@@ -160,8 +159,8 @@ Widget _myLocation() {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(left: 4),
-          child: Text(
+          margin: const EdgeInsets.only(left: 4),
+          child: const Text(
             '서울 서대문구 연희로 39',
             style: TextStyle(
               fontSize: 16,
@@ -178,20 +177,20 @@ Widget _buildRedLightMiddle() {
   return Container(
     margin: EdgeInsets.only(top: 55.h),
     height: 16.h,
-    color: Color(0xffF2F3F5),
+    color: const Color(0xffF2F3F5),
   );
 }
 
-Widget _buildRedLightGreenMessage(BuildContext context,
-    TextEditingController _placeNameController,
-    TextEditingController _greenMessageController) {
+Widget _buildRedLightGreenMessage(
+    TextEditingController placeNameController,
+    TextEditingController greenMessageController) {
   return Container(
     child: Column(
       children: <Widget>[
         _greenMessage(),
         _messageDetail(),
-        _messageInput(_greenMessageController),
-        _registrationButton(context, _placeNameController, _greenMessageController),
+        _messageInput(greenMessageController),
+        _registrationButton(placeNameController, greenMessageController),
       ],
     ),
   );
@@ -201,7 +200,7 @@ Widget _greenMessage() {
   return Container(
     alignment: Alignment.centerLeft,
     margin: EdgeInsets.only(left: 24.w, top: 35.h),
-    child: Text(
+    child: const Text(
       'Green Message',
       style: TextStyle(
         fontSize: 24,
@@ -217,7 +216,7 @@ Widget _messageDetail() {
     height: 40.h,
     alignment: Alignment.centerLeft,
     margin: EdgeInsets.only(top: 19.h),
-    child: Text(
+    child: const Text(
       'This message is sent to the neighbor who\nwill be turned greenlight.',
       style: TextStyle(
         fontSize: 17,
@@ -227,12 +226,12 @@ Widget _messageDetail() {
   );
 }
 
-Widget _messageInput(TextEditingController _greenMessageController) {
+Widget _messageInput(TextEditingController greenMessageController) {
   return Container(
     height: 144.h,
     margin: EdgeInsets.only(top: 43.h, left: 24.w, right: 24.w),
     padding: EdgeInsets.only(bottom: 13.h),
-    decoration: BoxDecoration(
+    decoration: const BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(12.0)),
       color: Color(0xffFFFFFF),
       boxShadow: <BoxShadow> [
@@ -244,32 +243,32 @@ Widget _messageInput(TextEditingController _greenMessageController) {
       ],
     ),
     child: TextField(
-      controller: _greenMessageController,
+      controller: greenMessageController,
       keyboardType: TextInputType.multiline,
       maxLines: 5,
       maxLength: 140,
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
           borderSide: BorderSide(
             color: Colors.transparent,
             width: 342.w,
           ),
         ),
-        counterStyle: TextStyle(
+        counterStyle: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w400,
           color: Color(0xffBFBFBF),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
           borderSide: BorderSide(
             color: Colors.transparent,
             width: 342.w,
           ),
         ),
         hintText: 'Please leave support for your neighbors!',
-        hintStyle: TextStyle(
+        hintStyle: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w400,
           color: Color(0xffBFBFBF),
@@ -279,42 +278,46 @@ Widget _messageInput(TextEditingController _greenMessageController) {
   );
 }
 
-Widget _registrationButton(BuildContext context,
-    TextEditingController _placeNameController,
-    TextEditingController _greenMessageController) {
-  Color buttonColor = Color(0xffABB2BA);
-  if ((_placeNameController.text.isNotEmpty) && (_greenMessageController.text.isNotEmpty)) {
-    buttonColor = Color(0xff5DC86C);
+Widget _registrationButton(
+    TextEditingController placeNameController,
+    TextEditingController greenMessageController) {
+  Color buttonColor = const Color(0xffABB2BA);
+  if ((placeNameController.text.isNotEmpty) && (greenMessageController.text.isNotEmpty)) {
+    buttonColor = const Color(0xff5DC86C);
   } else {
-    buttonColor = Color(0xffABB2BA);
+    buttonColor = const Color(0xffABB2BA);
   }
-  return Container(
-    margin: EdgeInsets.only(top: 75.h),
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14)),
-        ),
-        backgroundColor: buttonColor,
-        minimumSize: Size(342.w, 54.h),
-        elevation: 0,
-      ),
-      onPressed: () {
-        if (buttonColor == Color(0xff5DC86C)) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Home(),
+  return Builder(
+    builder: (context) {
+      return Container(
+        margin: EdgeInsets.only(top: 75.h, left: 24.w, right: 24.w),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
             ),
-          );
-        }
-      },
-      child: Text(
-        'Registration',
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 18,
+            backgroundColor: buttonColor,
+            minimumSize: Size(342.w, 54.h),
+            elevation: 0,
+          ),
+          onPressed: () {
+            if (buttonColor == const Color(0xff5DC86C)) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Home(),
+                ),
+              );
+            }
+          },
+          child: const Text(
+            'Registration',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
+            ),
+          ),
         ),
-      ),
-    ),
+      );
+    }
   );
 }

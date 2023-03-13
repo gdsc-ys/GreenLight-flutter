@@ -17,10 +17,10 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<GL_User?>(context);
 
     if (user == null){
-      return Authenticate();
+      return const Authenticate();
 
     } else {
-      return Home();
+      return const Home();
     }
   }
 }
