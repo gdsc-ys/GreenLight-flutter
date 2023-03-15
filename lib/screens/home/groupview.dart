@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:green_light/screens/home/creategroupview.dart';
 import 'package:green_light/screens/home/drawerview.dart';
 
 class GroupPage extends StatelessWidget {
@@ -26,7 +27,13 @@ class GroupPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xff5DC86C),
         child: const Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateGroupView(),
+            ),
+          );
+        },
       ),
     );
 
