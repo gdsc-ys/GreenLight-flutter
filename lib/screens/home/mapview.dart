@@ -54,7 +54,6 @@ class _MapViewState extends State<MapView> {
   void initState() {
     super.initState();
 
-    getCurrentLocation();
     widget.showMarkers?.then((value) {
       setState(() {
         _showMarkers = value;
@@ -90,7 +89,7 @@ class _MapViewState extends State<MapView> {
   File? _image;
   final picker = ImagePicker();
 
-  void getCurrentLocation() async {
+  Future<void> getCurrentLocation() async {
     Location location = Location();
 
     location.getLocation().then(
@@ -133,6 +132,7 @@ class _MapViewState extends State<MapView> {
   }
 
   Future getImage(ImageSource imageSource) async {
+    await getCurrentLocation();
     final image = await picker.pickImage(source: imageSource);
 
     var param = false;
