@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:green_light/firebase_options.dart';
 import 'package:green_light/models/map.dart';
 import 'package:green_light/models/user.dart';
@@ -35,12 +36,20 @@ class MyApp extends StatelessWidget {
     //   ),
     // );
 
-    return StreamProvider<GL_User?>.value(
-      initialData: null,
-      value: AuthService().user,
-      child: MaterialApp(
-        home: Wrapper(),
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return StreamProvider<GL_User?>.value(
+          initialData: null,
+          value: AuthService().user,
+          child: const MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Wrapper(),
+          ),
+        );
+      },
     );
   }
 }

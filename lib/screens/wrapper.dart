@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:green_light/models/user.dart';
-import 'package:green_light/screens/authenticate/authenticate.dart';
 import 'package:green_light/screens/home/home.dart';
+import 'package:green_light/screens/home/loginview.dart';
 import 'package:provider/provider.dart';
 
 
@@ -17,10 +17,10 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<GL_User?>(context);
 
     if (user == null){
-      return Authenticate();
+      return const LoginView();
 
     } else {
-      return Home();
+      return const Home();
     }
   }
 }

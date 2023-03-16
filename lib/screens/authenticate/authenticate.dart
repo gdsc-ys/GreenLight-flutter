@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:green_light/screens/authenticate/register.dart';
 import 'package:green_light/screens/authenticate/sign_in.dart';
+import 'package:green_light/screens/home/createaccountview.dart';
+import 'package:green_light/screens/home/loginview.dart';
 
 
 class Authenticate extends StatefulWidget {
@@ -24,9 +26,14 @@ class _AuthenticateState extends State<Authenticate> {
   @override
   Widget build(BuildContext context) {
     if (showSignIn){
-      return SignIn(toggleView: toggleView);
+      return LoginView(toggleView: toggleView);
     } else {
-      return Register(toggleView: toggleView);
+      return CreateAccountView(toggleView: toggleView);
     }
+    // if (showSignIn){
+    //   return SignIn(toggleView: toggleView);
+    // } else {
+    //   return Register(toggleView: toggleView);
+    // }
   }
 }

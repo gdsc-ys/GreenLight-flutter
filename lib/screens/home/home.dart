@@ -42,12 +42,18 @@ class _HomeState extends State<Home> {
     Set<Marker> _showMarkers = {};
     QuerySnapshot<Map<String, dynamic>> garbages = await db.collection('garbages2').get();
 
+    BitmapDescriptor garbage_box = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(),
+      "assets/style/recycle-symbol.png"
+    );
+
     for (int i = 0; i < garbages.size; i++){
       print(garbages.docs[i]['name']);
       _showMarkers.add(
         Marker(
           markerId: MarkerId(garbages.docs[i]['name']),
           position: LatLng(garbages.docs[i]['lat'], garbages.docs[i]['lng']),
+          icon: garbage_box,
         )
       );
     }
@@ -72,18 +78,18 @@ class _HomeState extends State<Home> {
               children: _widgetOptions,
           ),
           backgroundColor: Colors.lightGreenAccent[50],
-          appBar: AppBar(
-            title: Text('Green Light'),
-            backgroundColor: Colors.lightGreenAccent[400],
-            elevation: 0.0,
-            actions: <Widget>[
-              TextButton.icon(
-                onPressed: () async {
-                  await _auth.signOut();
-                }, icon: Icon(Icons.person, color: Colors.white,), label: Text('Logout', style: TextStyle(color: Colors.white),)
-              ),
-            ],
-          ),
+          // appBar: AppBar(
+          //   title: Text('Green Light'),
+          //   backgroundColor: Colors.lightGreenAccent[400],
+          //   elevation: 0.0,
+          //   actions: <Widget>[
+          //     TextButton.icon(
+          //       onPressed: () async {
+          //         await _auth.signOut();
+          //       }, icon: Icon(Icons.person, color: Colors.white,), label: Text('Logout', style: TextStyle(color: Colors.white),)
+          //     ),
+          //   ],
+          // ),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
             boxShadow: <BoxShadow> [

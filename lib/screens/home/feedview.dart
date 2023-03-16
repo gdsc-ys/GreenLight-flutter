@@ -1,4 +1,11 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:green_light/screens/home/drawerview.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart' show parse;
+import 'package:cp949_codec/cp949_codec.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -8,6 +15,11 @@ class FeedPage extends StatefulWidget {
 
 class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin{
   late TabController _tabController;
+
+  List<String?> title = [];
+  List<String?> link = [];
+  List<String?> imgSrc = [];
+  
   @override
   void initState() {
     super.initState();
@@ -15,6 +27,61 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
         length: 2,
         vsync: this,
     );
+
+    _getNews();
+
+  }
+
+  Future<void> _getNews() async {
+    var url = 'https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=102&sid2=252';
+
+    List<String?> title_in = [];
+    List<String?> link_in = [];
+    List<String?> imgSrc_in = [];
+
+    var response = await http.get(Uri.parse(url));
+
+    var document = parse(response.body);
+
+    var ul = document.getElementsByClassName("type06_headline");
+
+    var lists = ul[0].getElementsByClassName("photo");
+
+    var dls = ul[0].getElementsByTagName("dl");
+
+    for (var dl in dls) {
+      var dt = dl.getElementsByTagName("dt");
+
+      if (dt.length == 1){
+        var a = dt[0].querySelector("a");
+
+        title_in.add(cp949.decodeString(a?.innerHtml as String));
+
+        imgSrc_in.add('https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1');
+      } else {
+        var img = dt[0].querySelector("img");
+
+        imgSrc_in.add(img?.attributes['src']);
+
+        var a = dt[1].querySelector("a");
+
+        title_in.add(cp949.decodeString(a?.innerHtml as String));
+      }
+
+    }
+
+    for (var list in lists) {
+      var a = list.querySelector("a");
+
+      link_in.add(a?.attributes['href']);
+
+    }
+
+    setState(() {
+      title = title_in;
+      imgSrc = imgSrc_in;
+      link = link_in;
+    });
   }
 
   @override
@@ -22,12 +89,12 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
     super.dispose();
     _tabController.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: const DrawerView(),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xffFFFFFF),
         ),
         child: Column(
@@ -35,7 +102,7 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
           children: <Widget>[
             _buildFeedTop1(),
             _buildFeedTop2(),
-            _buildFeedTab(_tabController),
+            _buildFeedTab(_tabController, title, imgSrc, link),
           ],
         ),
       ),
@@ -45,21 +112,30 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
 }
 
 Widget _buildFeedTop1() {
-  return IconButton(
-    iconSize: 30,
-    padding: EdgeInsets.only(top: 50, left: 350),
-    constraints: BoxConstraints(),
-    onPressed: () {},
-    icon: Icon(Icons.menu),
-    color: Color(0xff8C939B),
+  return Builder(
+    builder: (context) {
+      return Container(
+        margin: EdgeInsets.only(top: 18.h, left: 330.w, right: 24.w),
+        child: IconButton(
+          iconSize: 30,
+          alignment: Alignment.centerRight,
+          constraints: const BoxConstraints(),
+          onPressed: () {
+            Scaffold.of(context).openEndDrawer();
+          },
+          icon: const Icon(Icons.menu),
+          color: const Color(0xff8C939B),
+        ),
+      );
+    }
   );
 }
 
 Widget _buildFeedTop2() {
   return Container(
     alignment: Alignment.centerLeft,
-    margin: EdgeInsets.only(left: 24),
-    child: Text(
+    margin: EdgeInsets.only(left: 24.w),
+    child: const Text(
       'Feed',
       style: TextStyle(
         fontSize: 24,
@@ -71,19 +147,22 @@ Widget _buildFeedTop2() {
   );
 }
 
-Widget _buildFeedTab(TabController tabController) {
+Future<void> callLink(String link) async {
+  launch(link, forceWebView: false, forceSafariVC: false);
+}
+
+Widget _buildFeedTab(TabController tabController, List<String?> title, List<String?> imgSrc, List<String?> link) {
   return Expanded(
     child: SizedBox(
       height: 500,
       child: Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24, top: 12),
+        padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 12.h),
         child: Column(
           children: [
-            // give the tab bar a height [can change height to preferred height]
             Container(
-              height: 55,
-              margin: EdgeInsets.only(bottom: 10),
-              decoration: BoxDecoration(
+              height: 50.h,
+              margin: EdgeInsets.only(bottom: 12.h),
+              decoration: const BoxDecoration(
                 color: Color(0xffF2F3F5),
                 borderRadius: BorderRadius.all(Radius.circular(12.0)),
                 boxShadow: <BoxShadow> [
@@ -96,8 +175,8 @@ Widget _buildFeedTab(TabController tabController) {
               ),
               child: TabBar(
                 controller: tabController,
-                indicatorPadding: EdgeInsets.all(6.0),
-                indicator: BoxDecoration(
+                indicatorPadding: const EdgeInsets.all(6.0),
+                indicator: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   boxShadow: <BoxShadow> [
                     BoxShadow(
@@ -108,13 +187,13 @@ Widget _buildFeedTab(TabController tabController) {
                   ],
                   color: Color(0xffFFFFFF),
                 ),
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
-                labelColor: Color(0xff444C58),
-                unselectedLabelColor: Color(0xff444C58),
-                tabs: <Tab>[
+                labelColor: const Color(0xff444C58),
+                unselectedLabelColor: const Color(0xff444C58),
+                tabs: const <Tab>[
                   // first tab [you can add an icon using the icon property]
                   Tab(
                     text: 'Education',
@@ -127,353 +206,75 @@ Widget _buildFeedTab(TabController tabController) {
                 ],
               ),
             ),
-            // tab bar view here
+
             Expanded(
               child: TabBarView(
                 controller: tabController,
-                children: <Widget>[
-                  // first tab bar view widget
-                  ListView(
-                    padding: EdgeInsets.only(top: 7),
+                children: [
+                  ListView.builder(
                     scrollDirection: Axis.vertical,
-                    children: <Widget>[
-                      InkWell(
+                    itemCount: imgSrc.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
                         child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
+                          padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
                           child: Row(
                             children: <Widget>[
                               ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                                 child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
+                                  imgSrc[index]!,
+                                  width: 64.w,
+                                  height: 64.h,
                                   fit: BoxFit.fill,
                                 ),
                               ),
-                              Container(
-                                margin: EdgeInsets.only(left: 22),
-                                child: Text(
-                                  '탄소중립의 첫걸음, 해피 해빗',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 22),
-                                child: Text(
-                                  '일상의 플라스틱 프리 실천법',
-                                  style: TextStyle(
+                                Flexible(
+                                  child: Container(
+                                  margin: EdgeInsets.only(left: 12.w),
+                                  child: Text(
+                                    title[index]!,
+                                    // "0000",
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        onTap: () {},
-                      ),
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 22),
-                                child: Text(
-                                  '스웨덴 환경 이야기 웹툰',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 22),
-                                child: Text(
-                                  '바다, 지구, 우리',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 22),
-                                child: Text(
-                                  '플라스틱 포장재',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 22),
-                                child: Text(
-                                  '플로깅 캠페인 참여 정보',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 22),
-                                child: Text(
-                                  '너무 많지도, 적지도 않은 환경 정보',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 22),
-                                child: Text(
-                                  '쓰레기섬, 그 원인과 해결방법',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 22),
-                                child: Text(
-                                  '아마존, 지구의 허파',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                    ],
+                        onTap: () => callLink(link[index]!),
+                      );
+                    },
                   ),
-                  // second tab bar view widget
-                  ListView(
-                    padding: EdgeInsets.only(top: 7),
+                  ListView.builder(
                     scrollDirection: Axis.vertical,
-                    children: <Widget>[
-                      InkWell(
+                    itemCount: 10,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
                         child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
+                          margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
                           child: Row(
                             children: <Widget>[
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(32),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
+                                child: Image.asset(
+                                  'assets/images/container.png',
+                                  width: 64.w,
+                                  height: 64.h,
                                   fit: BoxFit.fill,
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.only(left: 12),
+                                margin: EdgeInsets.only(left: 20.w),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.only(bottom: 4),
-                                      child: Text(
-                                        'Soonmin',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                      ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.only(top: 4),
-                                      child: Text(
-                                        '텀블러 사용을 진행했어요',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(32),
-                                child: Image.network(
-                                  'https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.only(bottom: 4),
-                                      child: Text(
+                                      padding: EdgeInsets.only(bottom: 2.h),
+                                      child: const Text(
                                         'Soonmin',
                                         style: TextStyle(
                                           fontSize: 15,
@@ -482,15 +283,15 @@ Widget _buildFeedTab(TabController tabController) {
                                       ),
                                     ),
                                     Container(
-                                      padding: EdgeInsets.only(top: 4),
-                                      child: Text(
+                                      padding: EdgeInsets.only(top: 2.h),
+                                      child: const Text(
                                         '텀블러 사용을 진행했어요',
                                         style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -498,8 +299,8 @@ Widget _buildFeedTab(TabController tabController) {
                           ),
                         ),
                         onTap: () {},
-                      ),
-                    ],
+                      );
+                    },
                   )
                 ],
               ),
