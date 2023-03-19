@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:green_light/screens/home/achievementview.dart';
+import 'package:green_light/screens/home/rlcertificationview.dart';
 
 class MyPageView extends StatefulWidget {
   const MyPageView({Key? key}) : super(key: key);
@@ -213,16 +215,25 @@ Widget _heightWeightTitle() {
             ),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(left: 143.w),
-          child: InkWell(
-            child: SizedBox(
-              width: 64.w,
-              height: 20.h,
-              child: Image.asset('assets/images/edit.png'),
-            ),
-            onTap: () {},
-          ),
+        Builder(
+          builder: (context) {
+            return Container(
+              margin: EdgeInsets.only(left: 143.w),
+              child: InkWell(
+                child: SizedBox(
+                  width: 64.w,
+                  height: 20.h,
+                  child: Image.asset('assets/images/edit.png'),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const RLCertificationView()),
+                  );
+                },
+              ),
+            );
+          }
         ),
       ],
     ),
@@ -371,16 +382,25 @@ Widget _achievementTitle() {
 }
 
 Widget _achievementContent() {
-  return Container(
-    width: 342.w,
-    height: 166.h,
-    margin: EdgeInsets.only(top: 12.h),
-    child: InkWell(
-      child: Image.asset(
-        'assets/images/achievements.png',
-        fit: BoxFit.fill,
-      ),
-      onTap: () {},
-    ),
+  return Builder(
+    builder: (context) {
+      return Container(
+        width: 342.w,
+        height: 166.h,
+        margin: EdgeInsets.only(top: 12.h),
+        child: InkWell(
+          child: Image.asset(
+            'assets/images/achievements.png',
+            fit: BoxFit.fill,
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AchievementView()),
+            );
+          },
+        ),
+      );
+    }
   );
 }
