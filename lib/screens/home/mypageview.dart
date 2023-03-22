@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:green_light/screens/home/achievementview.dart';
+import 'package:green_light/screens/home/painterview.dart';
 import 'package:green_light/screens/home/rlcertificationview.dart';
 
 class MyPageView extends StatefulWidget {
@@ -387,11 +388,19 @@ Widget _achievementContent() {
       return Container(
         width: 342.w,
         height: 166.h,
+        decoration: BoxDecoration(
+          color: Color(0xffFFFFFF),
+          borderRadius: BorderRadius.circular(10),
+        ),
         margin: EdgeInsets.only(top: 12.h),
         child: InkWell(
-          child: Image.asset(
-            'assets/images/achievements.png',
-            fit: BoxFit.fill,
+          child: Row(
+            children: <Widget>[
+              _greenlight(),
+              _reporting(),
+              _tumbler(),
+              _reusable(),
+            ],
           ),
           onTap: () {
             Navigator.push(
@@ -404,3 +413,289 @@ Widget _achievementContent() {
     }
   );
 }
+
+Widget _greenlight() {
+  return Container(
+    margin: EdgeInsets.only(top: 29.h, left: 22.w),
+    child: Column(
+      children: <Widget>[
+        Container(
+          width: 64.w,
+          height: 64.h,
+          child: Stack(
+            children: <Widget>[
+              Image.asset(
+                "assets/images/greenlightCir.png",
+                fit: BoxFit.fill,
+              ),
+              CustomPaint(
+                painter: PainterView(
+                  degree: 360 * (2 / 5),
+                  borderThickness: 4,
+                  borderColor: Color(0xff5DC86C),
+                ),
+                child: SizedBox(
+                  width: 63,
+                  height: 63,
+                )
+              ),
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 10.h),
+          child: Text(
+            "greenlight",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff000000),
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 11.h),
+          child: Row(
+            children: <Widget>[
+              Container(
+                child: Text(
+                  "2",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff000000),
+                  ),
+                ),
+              ),
+              Container(
+                child: Text(
+                  " / 5",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff838383),
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+Widget _reporting() {
+  return Container(
+    margin: EdgeInsets.only(top: 29.h, left: 14.w),
+    child: Column(
+      children: <Widget>[
+        Container(
+          width: 64.w,
+          height: 64.h,
+          child: Stack(
+            children: <Widget>[
+              Image.asset(
+                "assets/images/reportingCir.png",
+                fit: BoxFit.fill,
+              ),
+              CustomPaint(
+                  painter: PainterView(
+                    degree: 360 * (1 / 5),
+                    borderThickness: 4,
+                    borderColor: Color(0xff5DC86C),
+                  ),
+                  child: SizedBox(
+                    width: 63,
+                    height: 63,
+                  )
+              ),
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 10.h),
+          child: Text(
+            "reporting",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff000000),
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 11.h),
+          child: Row(
+            children: <Widget>[
+              Container(
+                child: Text(
+                  "1",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff000000),
+                  ),
+                ),
+              ),
+              Container(
+                child: Text(
+                  " / 5",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff838383),
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+Widget _tumbler() {
+  return Container(
+    margin: EdgeInsets.only(top: 29.h, left: 14.w),
+    child: Column(
+      children: <Widget>[
+        Container(
+          width: 64.w,
+          height: 64.h,
+          child: Stack(
+            children: <Widget>[
+              Image.asset(
+                "assets/images/tumblerCir.png",
+                fit: BoxFit.fill,
+              ),
+              CustomPaint(
+                  painter: PainterView(
+                    degree: 360 * (3 / 10),
+                    borderThickness: 4,
+                    borderColor: Color(0xff5DC86C),
+                  ),
+                  child: SizedBox(
+                    width: 63,
+                    height: 63,
+                  )
+              ),
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 10.h),
+          child: Text(
+            "tumbler",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff000000),
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 11.h),
+          child: Row(
+            children: <Widget>[
+              Container(
+                child: Text(
+                  "3",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff000000),
+                  ),
+                ),
+              ),
+              Container(
+                child: Text(
+                  " / 10",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff838383),
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+Widget _reusable() {
+  return Container(
+    margin: EdgeInsets.only(top: 29.h, left: 14.w),
+    child: Column(
+      children: <Widget>[
+        Container(
+          width: 64.w,
+          height: 64.h,
+          child: Stack(
+            children: <Widget>[
+              Image.asset(
+                "assets/images/reusableCir.png",
+                fit: BoxFit.fill,
+              ),
+              CustomPaint(
+                  painter: PainterView(
+                    degree: 360 * (3 / 5),
+                    borderThickness: 4,
+                    borderColor: Color(0xff5DC86C),
+                  ),
+                  child: SizedBox(
+                    width: 63,
+                    height: 63,
+                  )
+              ),
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 4.h),
+          child: Text(
+            "reusable\ncontainers",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff000000),
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 4.h),
+          child: Row(
+            children: <Widget>[
+              Container(
+                child: Text(
+                  "3",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff000000),
+                  ),
+                ),
+              ),
+              Container(
+                child: Text(
+                  " / 5",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff838383),
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
+    ),
+  );
+}
+
