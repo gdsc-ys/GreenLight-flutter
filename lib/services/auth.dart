@@ -10,7 +10,7 @@ class AuthService {
   var db = FirebaseFirestore.instance;
 
   // 유저 모델 커스터마이징
-  GL_User? _userFromFirebaseUser(User? user){
+  GL_User? _userFromFirebaseUser(User? user) {
     return user != null ? GL_User(uid: user.uid) : null;
   }
 
@@ -51,6 +51,10 @@ class AuthService {
           "weight": int.parse(weight),
           "steps": 0,
           "date_of_birth": DateTime(int.parse(year), int.parse(month), int.parse(day)),
+          "greenlight": 0,
+          "reporting": 0,
+          "tumbler": 0,
+          "container": 0,
         };
 
         db.collection("users").add(data);

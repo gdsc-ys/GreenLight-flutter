@@ -6,12 +6,14 @@ class Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.brown[100],
-      child: const Center(
-        child: SpinKitChasingDots(
-          color: Colors.lightGreenAccent,
-          size: 50.0,
+    return SafeArea(
+      child: Container(
+        color: Colors.white,
+        child: const Center(
+          child: SpinKitChasingDots(
+            color: Colors.lightGreenAccent,
+            size: 50.0,
+          ),
         ),
       ),
     );

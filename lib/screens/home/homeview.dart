@@ -9,18 +9,12 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
 
-  // @override
-  // void didChangeDependencies() {
-  //   // TODO: implement didChangeDependencies
-  //   super.didChangeDependencies();
-
-    
-  // }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.red,
+    return const SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.red,
+      ),
     );
   }
 }

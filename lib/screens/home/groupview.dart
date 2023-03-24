@@ -5,19 +5,21 @@ class GroupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          _buildGroupTop1(),
-          _buildGroupTop2(),
-          _buildGroupSchedule(),
-          _buildGroupMembers(),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff5DC86C),
-        child: Icon(Icons.add),
-        onPressed: () {},
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: <Widget>[
+            _buildGroupTop1(),
+            _buildGroupTop2(),
+            _buildGroupSchedule(),
+            _buildGroupMembers(),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color(0xff5DC86C),
+          child: const Icon(Icons.add),
+          onPressed: () {},
+        ),
       ),
     );
 
@@ -30,8 +32,8 @@ Widget _buildGroupTop1() {
     children: <Widget>[
       IconButton(
         iconSize: 30,
-        padding: EdgeInsets.only(top: 40, right: 10),
-        constraints: BoxConstraints(),
+        padding: const EdgeInsets.only(top: 40, right: 10),
+        constraints: const BoxConstraints(),
         onPressed: () {},
         icon: Icon(Icons.search),
         color: Color(0xff8C939B),

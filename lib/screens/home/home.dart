@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_light/screens/home/feedview.dart';
 import 'package:green_light/screens/home/groupview.dart';
 import 'package:green_light/screens/home/homeview.dart';
-import 'package:green_light/screens/home/mapview.dart';
+import 'package:green_light/screens/home/mapview_for_device.dart';
 import 'package:green_light/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -37,6 +37,7 @@ class _HomeState extends State<Home> {
     });
   }
 
+  // 쓰레기통 마커 불러오려고 쓴 건데 일단은 보류하는 기능
   static Future<Set<Marker>> get markers async {
     var db = FirebaseFirestore.instance;
     Set<Marker> _showMarkers = {};
@@ -45,6 +46,11 @@ class _HomeState extends State<Home> {
     BitmapDescriptor garbage_box = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(),
       "assets/style/recycle-symbol.png"
+    );
+
+    BitmapDescriptor redLight= await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(),
+      "assets/images/redspot.png"
     );
 
     for (int i = 0; i < garbages.size; i++){
@@ -61,6 +67,7 @@ class _HomeState extends State<Home> {
     return _showMarkers;
   }
 
+  // 언더바 회전을 위한 인덱스
   int _selectedIndex = 0;
 
   // 아래는 언더바 뷰
@@ -70,29 +77,15 @@ class _HomeState extends State<Home> {
     return MultiProvider(
       providers: [ListenableProvider(create: (_) => MapProvider())],
       child: Scaffold(
-          // body: SafeArea(
-          //   child: _widgetOptions.elementAt(_selectedIndex),
-          // ),
           body: IndexedStack(
               index: _selectedIndex,
               children: _widgetOptions,
           ),
           backgroundColor: Colors.lightGreenAccent[50],
-          // appBar: AppBar(
-          //   title: Text('Green Light'),
-          //   backgroundColor: Colors.lightGreenAccent[400],
-          //   elevation: 0.0,
-          //   actions: <Widget>[
-          //     TextButton.icon(
-          //       onPressed: () async {
-          //         await _auth.signOut();
-          //       }, icon: Icon(Icons.person, color: Colors.white,), label: Text('Logout', style: TextStyle(color: Colors.white),)
-          //     ),
-          //   ],
-          // ),
           bottomNavigationBar: Container(
+            // ignore: prefer_const_constructors
             decoration: BoxDecoration(
-            boxShadow: <BoxShadow> [
+            boxShadow: const <BoxShadow> [
               BoxShadow(
                 color: Color(0xffD3D3D3),
                 blurRadius: 25.0,
@@ -101,7 +94,7 @@ class _HomeState extends State<Home> {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(25.0),
               topRight: Radius.circular(25.0),
             ),
@@ -127,10 +120,10 @@ class _HomeState extends State<Home> {
                   ),
                 ],
                 currentIndex: _selectedIndex,
-                selectedLabelStyle: TextStyle(color: Colors.green),
+                selectedLabelStyle: const TextStyle(color: Colors.green),
                 selectedItemColor: Colors.green,
                 unselectedItemColor: Colors.grey,
-                unselectedLabelStyle: TextStyle(color: Colors.grey),
+                unselectedLabelStyle: const TextStyle(color: Colors.grey),
                 showUnselectedLabels: true,
                 onTap: _onItemTapped,
                 type: BottomNavigationBarType.fixed,

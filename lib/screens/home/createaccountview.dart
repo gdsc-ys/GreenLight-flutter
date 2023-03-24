@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:green_light/screens/home/loginview.dart';
-import 'package:green_light/screens/wrapper.dart';
 import 'package:green_light/services/auth.dart';
 
 
@@ -41,57 +39,59 @@ class _CreateAccountViewState extends State<CreateAccountView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        titleSpacing: 0,
-        leading: Container(
-          margin: EdgeInsets.only(left: 20.w),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            color: const Color(0xffC3C8CE),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          titleSpacing: 0,
+          leading: Container(
+            margin: EdgeInsets.only(left: 20.w),
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              color: const Color(0xffC3C8CE),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
-        ),
-        backgroundColor: const Color(0xffF2F3F5),
-        title: Container(
-          margin: EdgeInsets.only(left: 5.w),
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            'Create an account',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 24,
-              color: Color(0xff141C27),
+          backgroundColor: const Color(0xffF2F3F5),
+          title: Container(
+            margin: EdgeInsets.only(left: 5.w),
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Create an account',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 24,
+                color: Color(0xff141C27),
+              ),
             ),
           ),
         ),
-      ),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: SingleChildScrollView(
-          child: Container(
-            width: 390.w,
-            height: 750.h,
-            decoration: const BoxDecoration(
-              color: Color(0xffF2F3F5),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                _buildEmail(_emailController),
-                _buildPassword(_passwordController),
-                _buildUsername(_usernameController),
-                _buildBirth(_yearController, _monthController, _dateController),
-                _buildHeightWeight(_heightController, _weightController),
-                _buildSignUpButton(
-                  _emailController, _passwordController, _usernameController,
-                  _yearController, _monthController, _dateController,
-                  _heightController, _weightController, _auth,
-                ),
-              ],
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: SingleChildScrollView(
+            child: Container(
+              width: 390.w,
+              height: 750.h,
+              decoration: const BoxDecoration(
+                color: Color(0xffF2F3F5),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  _buildEmail(_emailController),
+                  _buildPassword(_passwordController),
+                  _buildUsername(_usernameController),
+                  _buildBirth(_yearController, _monthController, _dateController),
+                  _buildHeightWeight(_heightController, _weightController),
+                  _buildSignUpButton(
+                    _emailController, _passwordController, _usernameController,
+                    _yearController, _monthController, _dateController,
+                    _heightController, _weightController, _auth,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -586,10 +586,6 @@ Widget _buildSignUpButton(TextEditingController emailController,
                 heightController.text,
                 weightController.text,
                 );
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const Wrapper()),
-              // );
             }
           },
           child: const Text(
@@ -604,52 +600,3 @@ Widget _buildSignUpButton(TextEditingController emailController,
     },
   );
 }
-
-// Widget _buildSignUpButton(TextEditingController emailController,
-//     TextEditingController passwordController, TextEditingController usernameController,
-//     TextEditingController yearController, TextEditingController monthController,
-//     TextEditingController dateController, TextEditingController heightController,
-//     TextEditingController weightController,
-//     ) {
-//   Color buttonColor = const Color(0xffABB2BA);
-//   if ((emailController.text.isNotEmpty) && (passwordController.text.isNotEmpty)
-//       && (usernameController.text.isNotEmpty) && (yearController.text.isNotEmpty)
-//       && (monthController.text.isNotEmpty) && (dateController.text.isNotEmpty)
-//       && (heightController.text.isNotEmpty) && (weightController.text.isNotEmpty)) {
-//     buttonColor = const Color(0xff80CA4C);
-//   } else {
-//     buttonColor = const Color(0xffABB2BA);
-//   }
-//   return Builder(
-//     builder: (context) {
-//       return Container(
-//         margin: EdgeInsets.only(top: 53.h, left: 20.w, right: 20.w),
-//         child: ElevatedButton(
-//           style: ElevatedButton.styleFrom(
-//             shape: const RoundedRectangleBorder(
-//               borderRadius: BorderRadius.all(Radius.circular(10)),
-//             ),
-//             backgroundColor: buttonColor,
-//             minimumSize: Size(350.w, 60.h),
-//             elevation: 0,
-//           ),
-//           onPressed: () {
-//             if (buttonColor == const Color(0xff80CA4C)) {
-//               Navigator.push(
-//                 context,
-//                 MaterialPageRoute(builder: (context) => const LoginView()),
-//               );
-//             }
-//           },
-//           child: const Text(
-//             'Sign Up',
-//             style: TextStyle(
-//               fontWeight: FontWeight.w600,
-//               fontSize: 18,
-//             ),
-//           ),
-//         ),
-//       );
-//     },
-//   );
-// }

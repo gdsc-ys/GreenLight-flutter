@@ -40,66 +40,28 @@ class _LoginViewState extends State<LoginView> {
       buttonColor = const Color(0xffABB2BA);
     }
 
-    return loading ? const Loading() : Scaffold(
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: SingleChildScrollView(
-          child: Container(
-            width: 390.w,
-            height: 844.h,
-            decoration: const BoxDecoration(
-              color: Color(0xffF2F3F5),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                _buildGreenLight(),
-                _buildEmail(_emailController),
-                _buildPassword(_passwordController),
-                _buildSignUp(),
-                // Container(
-                //   margin: EdgeInsets.only(top: 124.h, left: 20.w, right: 20.w),
-                //   child: ElevatedButton(
-                //     style: ElevatedButton.styleFrom(
-                //       shape: const RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                //       ),
-                //       backgroundColor: buttonColor,
-                //       minimumSize: Size(350.w, 60.h),
-                //       elevation: 0,
-                //     ),
-                //     onPressed: () async {
-                //       if (buttonColor == const Color(0xff80CA4C)) {
-                //         setState(() {
-                //           loading = true;
-                //         });
-
-                //         dynamic result = await _auth.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
-                //         if (result == null){
-                //           setState(() {
-                //             loading = false;
-                //           });
-                //         }
-                        
-                //         // Navigator.push(
-                //         //   context,
-                //         //   MaterialPageRoute(builder: (context) => const Home()),
-                //         // );
-                //       }
-                //     },
-                //     child: const Text(
-                //       'Login',
-                //       style: TextStyle(
-                //         fontWeight: FontWeight.w600,
-                //         fontSize: 18,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // const LoginButton(),
-                _buildLoginButton(_emailController, _passwordController, _auth),
-              ],
+    return loading ? const Loading() : SafeArea(
+      child: Scaffold(
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: SingleChildScrollView(
+            child: Container(
+              width: 390.w,
+              height: 844.h,
+              decoration: const BoxDecoration(
+                color: Color(0xffF2F3F5),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  _buildGreenLight(),
+                  _buildEmail(_emailController),
+                  _buildPassword(_passwordController),
+                  _buildSignUp(),
+                  _buildLoginButton(_emailController, _passwordController, _auth),
+                ],
+              ),
             ),
           ),
         ),
@@ -321,23 +283,11 @@ Widget _buildLoginButton(TextEditingController emailController, TextEditingContr
             elevation: 0,
           ),
           onPressed: () async {
-            // if (buttonColor == const Color(0xff80CA4C)) {
-            
+            dynamic result = await _auth.signInWithEmailAndPassword(emailController.text, passwordController.text);
 
-              dynamic result = await _auth.signInWithEmailAndPassword(emailController.text, passwordController.text);
-              // debugPrint(emailController.text);
-              // debugPrint(passwordController.text);
-
-              if (result == null){
-                debugPrint("unfound user");
-              }
-
-              
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const Home()),
-              // );
-            // }
+            if (result == null){
+              debugPrint("unfound user");
+            }
           },
           child: const Text(
             'Login',

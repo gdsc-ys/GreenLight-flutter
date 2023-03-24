@@ -1,9 +1,13 @@
 class GL_User {
 
   final String? uid;
-  
-  GL_User({ this.uid });
+  // final String? nickname;
+  // final String? DOB;
+  // final int? height;
+  // final int? weight;
 
+  // GL_User({ this.uid, this.DOB, this.height, this.weight, this.nickname });
+  GL_User({this.uid});
 }
 
 class UserData {

@@ -24,32 +24,20 @@ class MyApp extends StatelessWidget {
   // Provider 라이브러리 이용하고, 데이터에 변화가 생기는 걸 반영해서 다음 위젯에 넘김
   @override
   Widget build(BuildContext context) {
-
-    // return MultiProvider(
-    //   providers: [
-    //     ListenableProvider(create: (_) => UserProvider()),
-    //     ListenableProvider(create: (_) => MapProvider()),
-    //   ],
-    //   value: AuthService().user,
-    //   child: MaterialApp(
-    //     home: Wrapper(),
-    //   ),
-    // );
-
     return ScreenUtilInit(
-      designSize: const Size(390, 844),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return StreamProvider<GL_User?>.value(
-          initialData: null,
-          value: AuthService().user,
-          child: const MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: Wrapper(),
-          ),
-        );
-      },
-    );
+        designSize: const Size(390, 844),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return StreamProvider<GL_User?>.value(
+            initialData: null,
+            value: AuthService().user,
+            child: const MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: Wrapper(),
+            ),
+          );
+        },
+      );
   }
 }

@@ -1,37 +1,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:green_light/screens/home/loginview.dart';
+import 'package:green_light/models/user.dart';
 import 'package:green_light/screens/home/managegroupsview.dart';
 import 'package:green_light/screens/home/mypageview.dart';
 import 'package:green_light/services/auth.dart';
+import 'package:provider/provider.dart';
 
 class DrawerView extends StatelessWidget {
-  const DrawerView({Key? key}) : super(key: key);
+  const DrawerView({Key? key, required this.userName}) : super(key: key);
+
+  final userName;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 308.w,
-      child: Drawer(
-        child: Column(
-          children: <Widget>[
-            _buildMyPage(),
-            _buildMiddle(),
-            _buildSettings(),
-          ],
-        )
+    GL_User? user = Provider.of<GL_User?>(context, listen: false);
+
+    return SafeArea(
+      child: SizedBox(
+        width: 308.w,
+        child: Drawer(
+          child: Column(
+            children: <Widget>[
+              _buildMyPage(userName),
+              _buildMiddle(),
+              _buildSettings(),
+            ],
+          )
+        ),
       ),
     );
   }
 }
-Widget _buildMyPage() {
+Widget _buildMyPage(String userName) {
   return Container(
     margin: EdgeInsets.only(top: 60.h),
     child: Column(
       children: <Widget>[
         _myPage(),
-        _modifyMyPage(),
+        _modifyMyPage(userName),
       ],
     ),
   );
@@ -52,7 +59,7 @@ Widget _myPage() {
 }
 
 
-Widget _modifyMyPage() {
+Widget _modifyMyPage(String userName) {
   return Builder(
     builder: (context) {
       return InkWell(
@@ -81,9 +88,10 @@ Widget _modifyMyPage() {
                   children: [
                     Container(
                       padding: EdgeInsets.only(bottom: 1.h),
-                      child: const Text(
-                        'User Name',
-                        style: TextStyle(
+                      child: Text(
+                        // 'User Name',
+                        userName,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
@@ -104,7 +112,7 @@ Widget _modifyMyPage() {
               ),
               Container(
                 margin: EdgeInsets.only(left: 18.w),
-                child: Icon(
+                child: const Icon(
                   Icons.arrow_forward_ios,
                   color: Color(0xffC3C8CE),
                   size: 25,
@@ -195,7 +203,7 @@ Widget _manageGroups() {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 67.w),
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_forward_ios,
                     color: Color(0xffC3C8CE),
                     size: 25,
@@ -250,7 +258,7 @@ Widget _logout() {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 136.w),
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_forward_ios,
                     color: Color(0xffC3C8CE),
                     size: 25,
@@ -261,11 +269,6 @@ Widget _logout() {
           ),
           onTap: () async {
             await _auth.signOut();
-            // 로그 아웃
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const LoginView()),
-            // );
           },
         );
       }

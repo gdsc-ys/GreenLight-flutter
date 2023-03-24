@@ -8,6 +8,7 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
+// 만보기 기능만 추가한 홈뷰
 class _HomeViewState extends State<HomeView> {
   late Stream<StepCount> _stepCountStream;
   late Stream<PedestrianStatus> _pedestrianStatusStream;

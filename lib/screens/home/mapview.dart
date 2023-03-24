@@ -167,6 +167,7 @@ class _MapViewState extends State<MapView> {
           "title": redlightTitleDescription[0],
           "message": redlightTitleDescription[1],
           "imageURL": imageURL,
+          "visit": 0,
         };
         
         db.collection("greenlights").add(data);

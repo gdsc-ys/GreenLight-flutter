@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:green_light/models/user.dart';
 import 'package:green_light/screens/home/drawerview.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:cp949_codec/cp949_codec.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -14,11 +17,22 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin{
+  // 번갈아 작동하는 탭
   late TabController _tabController;
 
+  // DB 연결
+  var db = FirebaseFirestore.instance;
+
+  // 네이버 뉴스 불러오기 위한 데이터들
   List<String?> title = [];
   List<String?> link = [];
   List<String?> imgSrc = [];
+
+  // 현재 streaming되는 user data
+  String? userName = "";
+  Timestamp? dateTime;
+  int? height;
+  int? weight;
   
   @override
   void initState() {
@@ -27,11 +41,25 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
         length: 2,
         vsync: this,
     );
-
+    _getUserInfo();
     _getNews();
 
   }
 
+  // 말 그대로 유저 정보 받아옴
+  Future<void> _getUserInfo() async {
+    GL_User? user = Provider.of<GL_User?>(context, listen: false);
+    db.collection("users").where('uid', isEqualTo: user!.uid).get().then((userData) {
+      setState(() {
+        userName = userData.docs[0].data()['nickname'];
+        dateTime = userData.docs[0].data()['date_of_birth'];
+        height = userData.docs[0].data()['height'];
+        weight = userData.docs[0].data()['weight'];
+      });
+    });
+  }
+
+  // 말 그대로 뉴스 받아옴
   Future<void> _getNews() async {
     var url = 'https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=102&sid2=252';
 
@@ -91,19 +119,21 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      endDrawer: const DrawerView(),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xffFFFFFF),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            _buildFeedTop1(),
-            _buildFeedTop2(),
-            _buildFeedTab(_tabController, title, imgSrc, link),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        endDrawer: DrawerView(userName: userName),
+        body: Container(
+          decoration: const BoxDecoration(
+            color: Color(0xffFFFFFF),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              _buildFeedTop1(),
+              _buildFeedTop2(),
+              _buildFeedTab(_tabController, title, imgSrc, link),
+            ],
+          ),
         ),
       ),
     );
@@ -147,6 +177,7 @@ Widget _buildFeedTop2() {
   );
 }
 
+// 링크 타고 뉴스로 감 브라우저 요청
 Future<void> callLink(String link) async {
   launch(link, forceWebView: false, forceSafariVC: false);
 }

@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:math';
 
-class RedLightView extends StatefulWidget {
-  const RedLightView({Key? key, required this.address}) : super(key: key);
+class GreenLightView extends StatefulWidget {
+  const GreenLightView({Key? key, required this.previousMessage}) : super(key: key);
 
-  final String address;
+  // 이전 유저가 남긴 메세지 받아옴
+  final String previousMessage;
 
   @override
-  State<RedLightView> createState() => _RedLightViewState();
+  State<GreenLightView> createState() => _GreenLightViewState();
 }
 
-class _RedLightViewState extends State<RedLightView> {
+class _GreenLightViewState extends State<GreenLightView> {
   final _placeNameController = TextEditingController();
   final _greenMessageController = TextEditingController();
 
@@ -58,7 +59,7 @@ class _RedLightViewState extends State<RedLightView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  _buildRedLightPlaceName(_placeNameController, widget.address),
+                  _buildRedLightPlaceName(_placeNameController, widget.previousMessage),
                   _buildRedLightMiddle(),
                   _buildRedLightGreenMessage(_placeNameController,
                       _greenMessageController),
@@ -72,13 +73,13 @@ class _RedLightViewState extends State<RedLightView> {
   }
 }
 
-Widget _buildRedLightPlaceName(TextEditingController placeNameController, String address) {
+Widget _buildRedLightPlaceName(TextEditingController placeNameController, String previousMessage) {
   return Container(
     child: Column(
       children: <Widget>[
         _placeName(),
         _placeInput(placeNameController),
-        _myLocation(address),
+        _myLocation(previousMessage),
       ],
     ),
   );
@@ -89,7 +90,7 @@ Widget _placeName() {
     alignment: Alignment.centerLeft,
     margin: EdgeInsets.only(left: 24.w, top: 30.h),
     child: const Text(
-      'Place name',
+      'Message for you',
       style: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w600,
@@ -101,26 +102,10 @@ Widget _placeName() {
 Widget _placeInput(TextEditingController placeNameController) {
   return Container(
     margin: EdgeInsets.only(top: 20.h, left: 24.w, right: 24.w),
-    child: TextField(
-      controller: placeNameController,
-      decoration: const InputDecoration(
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color(0xffF2F3F5),
-          ),
-        ),
-        hintText: 'Describe the place where there is trash',
-        hintStyle: TextStyle(
-          fontSize: 17,
-          fontWeight: FontWeight.w400,
-          color: Color(0xff9D9D9D),
-        ),
-      ),
-    ),
   );
 }
 
-Widget _myLocation(String address) {
+Widget _myLocation(String previousMessage) {
   double radian = (360-22.08) * pi / 180;
   return Container(
     width: 342.w,
@@ -144,7 +129,7 @@ Widget _myLocation(String address) {
           child: Transform.rotate(
             angle: radian,
             child: const Icon(
-              Icons.near_me,
+              Icons.message,
               size: 30,
               color: Color(0xffE6726C),
               shadows: <Shadow>[Shadow(color: Color(0xffE6726C), blurRadius: 10.0, offset: Offset(0, 0))],
@@ -153,21 +138,11 @@ Widget _myLocation(String address) {
         ),
         Container(
           margin: const EdgeInsets.only(left: 6.8),
-          child: const Text(
-            '내 위치:',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(left: 4),
           child: Text(
-            address,
+            previousMessage,
             style: const TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
@@ -187,6 +162,7 @@ Widget _buildRedLightMiddle() {
 Widget _buildRedLightGreenMessage(
     TextEditingController placeNameController,
     TextEditingController greenMessageController) {
+  // ignore: avoid_unnecessary_containers
   return Container(
     child: Column(
       children: <Widget>[
@@ -285,7 +261,7 @@ Widget _registrationButton(
     TextEditingController placeNameController,
     TextEditingController greenMessageController) {
   Color buttonColor = const Color(0xffABB2BA);
-  if ((placeNameController.text.isNotEmpty) && (greenMessageController.text.isNotEmpty)) {
+  if ((greenMessageController.text.isNotEmpty)) {
     buttonColor = const Color(0xff5DC86C);
   } else {
     buttonColor = const Color(0xffABB2BA);
@@ -305,7 +281,7 @@ Widget _registrationButton(
           ),
           onPressed: () {
             if (buttonColor == const Color(0xff5DC86C)) {
-              Navigator.pop(context, [placeNameController.text, greenMessageController.text]);
+              Navigator.pop(context, [greenMessageController.text]);
             }
           },
           child: const Text(
