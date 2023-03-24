@@ -20,7 +20,8 @@ class Wrapper extends StatelessWidget {
       return const LoginView();
 
     } else {
-      return const Home();
+      // type 문제 때문에 일단 const는 빼놓았음
+      return Home(uid: user.uid);
     }
   }
 }

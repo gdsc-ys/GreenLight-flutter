@@ -128,6 +128,60 @@ Widget _buildGroupSchedule() {
   );
 }
 
+Widget _GroupContainer() {
+  return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        color: Color(0xffFFFFFF),
+        boxShadow: <BoxShadow> [
+          BoxShadow(
+            color: Color(0xffD3D3D3),
+            blurRadius: 10.0,
+            offset: Offset(0.0, 5),
+          ),
+        ],
+      ),
+      width: 165,
+      height: 165,
+      margin: const EdgeInsets.only(left: 12, right: 12, bottom: 30),
+      child: Container(
+        margin: EdgeInsets.only(top: 16),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(right: 100, bottom: 70),
+              child: Text("Sehui", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),),
+            ),
+            Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 10, bottom: 10),
+                  child: Text("495kcal", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 20, bottom: 10),
+                  child: Text("/ 1000kcal", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 10),
+                  child: Text("49.5%"),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 80),
+                  child: Text("18%"),
+                )
+              ],
+            )
+          ],
+        ),
+      )
+  );
+}
+
 Widget _buildGroupMembers() {
   return Expanded(
     child: SizedBox(
@@ -139,108 +193,7 @@ Widget _buildGroupMembers() {
         shrinkWrap: true,
         crossAxisCount: 2,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              color: Color(0xffFFFFFF),
-              boxShadow: <BoxShadow> [
-                BoxShadow(
-                  color: Color(0xffD3D3D3),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 5),
-                ),
-              ],
-            ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 24, bottom: 30),
-            child: Text('first'),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              color: Color(0xffFFFFFF),
-              boxShadow: <BoxShadow> [
-                BoxShadow(
-                  color: Color(0xffD3D3D3),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 5),
-                ),
-              ],
-            ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 12, bottom: 30, right: 24),
-            child: Text('first'),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              color: Color(0xffFFFFFF),
-              boxShadow: <BoxShadow> [
-                BoxShadow(
-                  color: Color(0xffD3D3D3),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 5),
-                ),
-              ],
-            ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 24, bottom: 30),
-            child: Text('first'),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              color: Color(0xffFFFFFF),
-              boxShadow: <BoxShadow> [
-                BoxShadow(
-                  color: Color(0xffD3D3D3),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 5),
-                ),
-              ],
-            ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 12, bottom: 30, right: 24),
-            child: Text('first'),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              color: Color(0xffFFFFFF),
-              boxShadow: <BoxShadow> [
-                BoxShadow(
-                  color: Color(0xffD3D3D3),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 5),
-                ),
-              ],
-            ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 24, bottom: 30),
-            child: Text('first'),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              color: Color(0xffFFFFFF),
-              boxShadow: <BoxShadow> [
-                BoxShadow(
-                  color: Color(0xffD3D3D3),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 5),
-                ),
-              ],
-            ),
-            width: 165,
-            height: 165,
-            margin: EdgeInsets.only(left: 12, bottom: 30, right: 24),
-            child: Text('first'),
-          ),
+          for (var i = 0; i < 6; i++) _GroupContainer()
         ],
       ),
     ),

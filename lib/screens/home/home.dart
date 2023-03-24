@@ -9,10 +9,14 @@ import 'package:green_light/screens/home/mapview_for_device.dart';
 import 'package:green_light/services/auth.dart';
 import 'package:provider/provider.dart';
 
-
+import 'package:location/location.dart';
+import 'package:green_light/services/greenlight.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({required this.uid, super.key});
+
+  final String? uid;
 
   @override
   State<Home> createState() => _HomeState();
@@ -20,15 +24,34 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
+  // String? get uid => widget.uid;
+  static String? uid;
+
+  // location 가져오기
+  static Future<LocationData> get location async {
+    LocationGreenLight inst = await LocationGreenLight();
+    LocationData? location = await inst.fetchCurrentLocation();
+
+    return location!;
+  }
+
+  int state = 0;
+
   // firebase의 유저 정보 연결
   final AuthService _auth = AuthService();
 
+  @override
+  void initState() {
+    super.initState();
+    String? uid = widget.uid;
+  }
+
   // 언더바로 4개의 컨테츠 제공하는 코드
   final List<Widget> _widgetOptions = <Widget>[
-    HomeView(),
-    FeedPage(),
-    MapView(showMarkers: markers),
-    GroupPage(),
+  HomeView(location: location, uid: uid),
+  FeedPage(),
+  MapView(showMarkers: markers),
+  GroupPage(),
   ];
 
   void _onItemTapped(int index) {
