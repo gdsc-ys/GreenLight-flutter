@@ -46,7 +46,8 @@ Widget _buildMyPage(String userName) {
 Widget _myPage() {
   return Container(
     alignment: Alignment.centerLeft,
-    margin: EdgeInsets.only(left: 24.w),
+    // margin: EdgeInsets.only(left: 24.w),
+    margin: EdgeInsets.only(left: 20.w),
     child: const Text(
       'My Page',
       style: TextStyle(
@@ -65,7 +66,8 @@ Widget _modifyMyPage(String userName) {
       return InkWell(
         child: Container(
           margin: EdgeInsets.only(top: 36.h),
-          padding: EdgeInsets.only(left: 24.w),
+          // padding: EdgeInsets.only(left: 24.w),
+          padding: EdgeInsets.only(left: 20.w),
           child: Row(
             children: <Widget>[
               Container(
@@ -146,9 +148,9 @@ Widget _buildSettings() {
     child: Column(
       children: <Widget>[
         _settings(),
-        _manageGroups(),
+        // _manageGroups(),
         _logout(),
-        _appNotifications(),
+        // _appNotifications(),
       ],
     ),
   );
@@ -157,7 +159,8 @@ Widget _buildSettings() {
 Widget _settings() {
   return Container(
     alignment: Alignment.centerLeft,
-    margin: EdgeInsets.only(left: 24.w),
+    // margin: EdgeInsets.only(left: 24.w),
+    margin: EdgeInsets.only(left: 20.w),
     child: const Text(
       'Settings',
       style: TextStyle(
@@ -175,7 +178,8 @@ Widget _manageGroups() {
         return InkWell(
           child: Container(
             margin: EdgeInsets.only(top: 36.h),
-            padding: EdgeInsets.only(left: 24.w),
+            // padding: EdgeInsets.only(left: 24.w),
+            padding: EdgeInsets.only(left: 20.w),
             child: Row(
               children: <Widget>[
                 Container(
@@ -230,7 +234,8 @@ Widget _logout() {
         return InkWell(
           child: Container(
             margin: EdgeInsets.only(top: 36.h),
-            padding: EdgeInsets.only(left: 24.w),
+            // padding: EdgeInsets.only(left: 24.w),
+            padding: EdgeInsets.only(left: 20.w),
             child: Row(
               children: <Widget>[
                 Container(
@@ -281,7 +286,8 @@ Widget _appNotifications() {
     builder: (context) {
       return Container(
         margin: EdgeInsets.only(top: 36.h),
-        padding: EdgeInsets.only(left: 24.w),
+        // padding: EdgeInsets.only(left: 24.w),
+        padding: EdgeInsets.only(left: 20.w),
         child: Row(
           children: <Widget>[
             Container(

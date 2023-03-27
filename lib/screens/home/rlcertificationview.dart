@@ -36,6 +36,7 @@ class _RLCertificationViewState extends State<RLCertificationView> {
   int? visit;
   int? greenLight;
   String? imagePath;
+  String? userName;
 
   bool loadingFlag = false;
   @override
@@ -69,6 +70,7 @@ class _RLCertificationViewState extends State<RLCertificationView> {
       setState(() {
         userRef = value.docs[0].reference;
         greenLight = value.docs[0].data()['greenlight'];
+        userName = value.docs[0].data()['nickname'];
       });
     });
   }
@@ -89,34 +91,44 @@ class _RLCertificationViewState extends State<RLCertificationView> {
 
     if (param){
 
-      List<String> redlightTitleDescription = await Navigator.push(
+      List<String>? redlightTitleDescription = await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => GreenLightView(previousMessage: message!,))
         );
 
-      final path = 'red_lights/${user!.uid}_${DateTime.now().millisecondsSinceEpoch}';
+      if (redlightTitleDescription != null) {
+        final path = 'red_lights/${user!.uid}_${DateTime.now().millisecondsSinceEpoch}';
 
-      final storageRef = FirebaseStorage.instance.ref().child(path);
+        final storageRef = FirebaseStorage.instance.ref().child(path);
 
-      final deleteRef = FirebaseStorage.instance.ref().child(imagePath!);
+        final deleteRef = FirebaseStorage.instance.ref().child(imagePath!);
 
-      try {
-        await storageRef.putFile(_image!);
+        try {
+          await storageRef.putFile(_image!);
 
-        final imageURL = await storageRef.getDownloadURL();
+          final imageURL = await storageRef.getDownloadURL();
 
-        await deleteRef.delete();
+          await deleteRef.delete();
 
-        await documentRef!.update({"message": redlightTitleDescription[0], "imageURL": imageURL, "visit": (visit! + 1), "imagePath": path});
+          await documentRef!.update({"message": redlightTitleDescription[0], "imageURL": imageURL, "visit": (visit! + 1), "imagePath": path});
 
-        await userRef!.update({"greenlight": greenLight! + 1});
-        
+          await userRef!.update({"greenlight": greenLight! + 1});
+
+          final dataOfCommunityEvent = {
+            "date": Timestamp.now().toDate(),
+            "type": 0,
+            "nickname": userName,
+          };
+          await db.collection("community_events").add(dataOfCommunityEvent);
+          
+          Navigator.pop(context);
+        } catch (e) {
+          debugPrint("file is not uploaded");
+          debugPrint(e.toString());
+        }
+      } else {
         Navigator.pop(context);
-      } catch (e) {
-        debugPrint("file is not uploaded");
-        debugPrint(e.toString());
       }
-
     }
   }
 
@@ -162,7 +174,7 @@ class _RLCertificationViewState extends State<RLCertificationView> {
           ),
           Container(
             width: 342.w,
-            height: 161.h,
+            height: 190.h,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               boxShadow: const <BoxShadow> [

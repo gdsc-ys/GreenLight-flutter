@@ -13,6 +13,7 @@ import 'package:green_light/models/user.dart';
 import 'package:green_light/screens/home/redlightview.dart';
 import 'package:green_light/screens/home/rlcertificationview.dart';
 import 'package:green_light/screens/shared/loading.dart';
+import 'package:green_light/services/distance.dart';
 import 'package:green_light/services/permission.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
@@ -22,9 +23,11 @@ import 'package:provider/provider.dart';
 
 // 유저의 현 위치 추적까지 있는 맵
 class MapView extends StatefulWidget {
-  const MapView({required this.showMarkers, super.key});
+  const MapView({required this.showMarkers, required this.location, required this.locChange, super.key});
 
   final Future<Set<Marker>>? showMarkers;
+  final Function(LocationData newLoc) locChange;
+  final Location location;
   @override
   State<MapView> createState() => _MapViewState();
 }
@@ -35,7 +38,8 @@ class _MapViewState extends State<MapView> {
 
   Set<Marker> _showMarkers = {};
 
-  final Completer<GoogleMapController> _controller = Completer();
+
+  late GoogleMapController googleMapController;
 
   LocationData? currentLocation;
 
@@ -51,26 +55,17 @@ class _MapViewState extends State<MapView> {
 
   int? reporting;
 
+  String? userName;
+
   File? _image;
   final picker = ImagePicker();
 
-  void getCurrentLocation() async {
-    Location location = Location();
-
-    location.getLocation().then(
-      (location) {
-        setState(() {
-          currentLocation = location;
-        });
-      }
-    );
-
-    GoogleMapController googleMapController = await _controller.future;
-
+  Future<void> getCurrentLocation() async {
     // 위치 업데이트
-    location.onLocationChanged.listen(
+    widget.location.onLocationChanged.listen(
       (newLoc) {
         setState(() {
+          widget.locChange(newLoc);
           currentLocation = newLoc;
           _markers.add(
             Marker(
@@ -79,7 +74,6 @@ class _MapViewState extends State<MapView> {
               position: LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
             )
           );
-
           googleMapController.animateCamera(
             CameraUpdate.newCameraPosition(
               CameraPosition(
@@ -91,10 +85,34 @@ class _MapViewState extends State<MapView> {
               ),
             )
           );
-
         });
       }
     );
+  }
+
+  void _onMapCreated(GoogleMapController controller) async {
+    googleMapController = controller;
+    googleMapController.setMapStyle(_mapStyle);
+    // 현위치업데이트
+    getCurrentLocation();
+    // 현위치를 유저의 것으로 반영
+    _getUserLocation(context);
+    // 레드라이트 불러옴
+    _loadMarkers();
+    // 레드라이트들 변화 스트리밍
+    _subscribeToMarkers();
+
+    widget.showMarkers?.then((value) {
+      setState(() {
+        _markers.add(
+          Marker(
+            markerId: MarkerId("currentLocation"),
+            icon: userIcon,
+            position: LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+          )
+        );
+      });
+    });
   }
 
   void userIconSet() async {
@@ -110,8 +128,12 @@ class _MapViewState extends State<MapView> {
   }
 
   void _getUserInfo() {
-    userRef!.get().then((DocumentSnapshot<Map<String, dynamic>> value) {
-      reporting = value.data()!['reporting'];
+    db.collection("users").where("uid", isEqualTo: user!.uid).get().then((QuerySnapshot<Map<String, dynamic>> value) {
+      setState(() {
+        userRef = value.docs[0].reference;
+        reporting = value.docs[0].data()['reporting'];
+        userName = value.docs[0].data()['nickname'];
+      });
     });
   }
   
@@ -131,39 +153,45 @@ class _MapViewState extends State<MapView> {
     if (param){
 
       var address = await _getAddress();
-      List<String> redlightTitleDescription = await Navigator.push(
+      List<String>? redlightTitleDescription = await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => RedLightView(address: address,))
         );
 
-      final path = 'red_lights/${user!.uid}_${DateTime.now().millisecondsSinceEpoch}';
+      if (redlightTitleDescription != null){
+        final path = 'red_lights/${user!.uid}_${DateTime.now().millisecondsSinceEpoch}';
 
-      final storageRef = FirebaseStorage.instance.ref().child(path);
-      try {
-        await storageRef.putFile(_image!);
+        final storageRef = FirebaseStorage.instance.ref().child(path);
+        try {
+          await storageRef.putFile(_image!);
 
-        final imageURL = await storageRef.getDownloadURL();
+          final imageURL = await storageRef.getDownloadURL();
 
-        await userRef!.update({"reporting": reporting! + 1});
+          await userRef!.update({"reporting": reporting! + 1});
 
-        final data = {
-          "lat": currentLocation!.latitude,
-          "lng": currentLocation!.longitude,
-          "title": redlightTitleDescription[0],
-          "message": redlightTitleDescription[1],
-          "imageURL": imageURL,
-          "visit": 0,
-          "green_or_what": false,
-          "imagePath": path, 
-        };
-        
-        db.collection("greenlights").add(data);
-        
-      } catch (e) {
-        debugPrint("file is not uploaded");
-        debugPrint(e.toString());
+          final dataOfGreenLight = {
+            "lat": currentLocation!.latitude,
+            "lng": currentLocation!.longitude,
+            "title": redlightTitleDescription[0],
+            "message": redlightTitleDescription[1],
+            "imageURL": imageURL,
+            "visit": 0,
+            "imagePath": path,
+            "address": address,
+          };
+          final dataOfCommunityEvent = {
+            "date": Timestamp.now().toDate(),
+            "type": 1,
+            "nickname": userName,
+          };
+          await db.collection("greenlights").add(dataOfGreenLight);
+          await db.collection("community_events").add(dataOfCommunityEvent);
+          
+        } catch (e) {
+          debugPrint("file is not uploaded");
+          debugPrint(e.toString());
+        }
       }
-
     }
   }
 
@@ -171,37 +199,23 @@ class _MapViewState extends State<MapView> {
   void initState() {
     super.initState();
 
-    // 현위치업데이트
-    getCurrentLocation();
-
     // 유저 아이콘 초기화 <= 솔직히 필요없음
     userIconSet();
 
     user = Provider.of<GL_User?>(context, listen: false);
 
-    userRef = db.collection("users").doc(user!.uid);
-
     rootBundle.loadString("assets/style/map_style.txt").then((value) => {
       _mapStyle = value
     });
-    // 현위치를 유저의 것으로 반영
-    _getUserLocation(context);
-    // 레드라이트 불러옴
-    _loadMarkers();
-    // 레드라이트들 변화 스트리밍
-    _subscribeToMarkers();
 
-    widget.showMarkers?.then((value) {
-      setState(() {
-        _markers.add(
-          Marker(
-            markerId: MarkerId("currentLocation"),
-            icon: userIcon,
-            position: LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-          )
-        );
-      });
-    });
+    widget.location.getLocation().then(
+      (location) {
+        setState(() {
+          currentLocation = location;
+        });
+      }
+    );
+    _getUserInfo();
   }
 
 
@@ -242,7 +256,7 @@ class _MapViewState extends State<MapView> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: currentLocation == null
-            ? Loading()
+            ? const Loading()
             : GoogleMap(
           myLocationEnabled: false,
           mapToolbarEnabled: false,
@@ -258,10 +272,7 @@ class _MapViewState extends State<MapView> {
             target: LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
             zoom: 18.0,
           ),
-          onMapCreated: (mapController) {
-            mapController.setMapStyle(_mapStyle);
-            _controller.complete(mapController);
-          },
+          onMapCreated: _onMapCreated,
         ),
         floatingActionButton: FloatingActionButton(
           heroTag: 'cameraBtn',
@@ -294,7 +305,9 @@ class _MapViewState extends State<MapView> {
               markerId: MarkerId(doc.id),
               position: LatLng(doc['lat'], doc['lng']),
               icon: doc['visit'] == 2 ? greenLight: redLight,
-              onTap: doc['visit'] == 2 ? () {} : () {
+              onTap: doc['visit'] == 2 || calculateDistance(doc['lat'], doc['lng'], currentLocation!.latitude, currentLocation!.longitude) >= 0.05 ? () {
+                debugPrint(calculateDistance(doc['lat'], doc['lng'], currentLocation!.latitude, currentLocation!.longitude).toString());
+              } : () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => RLCertificationView(markerID: doc.id,)),
@@ -327,7 +340,9 @@ class _MapViewState extends State<MapView> {
               markerId: MarkerId(doc.id),
               position: LatLng(doc['lat'], doc['lng']),
               icon: doc['visit'] == 2 ? greenLight: redLight,
-              onTap: doc['visit'] == 2 ? () {} : () {
+              onTap: doc['visit'] == 2 || calculateDistance(doc['lat'], doc['lng'], currentLocation!.latitude, currentLocation!.longitude) >= 0.05 ? () {
+                debugPrint(calculateDistance(doc['lat'], doc['lng'], currentLocation!.latitude, currentLocation!.longitude).toString());
+              } : () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => RLCertificationView(markerID: doc.id,)),

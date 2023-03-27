@@ -192,7 +192,7 @@ Widget _greenMessage() {
 Widget _messageDetail() {
   return Container(
     width: 345.w,
-    height: 40.h,
+    height: 50.h,
     alignment: Alignment.centerLeft,
     margin: EdgeInsets.only(top: 19.h),
     child: const Text(

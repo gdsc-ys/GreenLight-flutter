@@ -4,6 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:green_light/screens/home/rlcertificationview.dart';
+import 'package:green_light/services/distance.dart';
+import 'package:location/location.dart';
 
 // 단순히 마커 표시하는 기능하고 마커 onTap기능만 있는 맵
 class MapView extends StatefulWidget {
@@ -22,7 +24,6 @@ class _MapViewState extends State<MapView> {
   @override
   void initState() {
     super.initState();
-
     SchedulerBinding.instance.addPostFrameCallback((_) {
       rootBundle.loadString("assets/style/map_style.txt").then((value) => {
         _mapStyle = value
@@ -61,7 +62,7 @@ class _MapViewState extends State<MapView> {
               markerId: MarkerId(doc.id),
               position: LatLng(doc['lat'], doc['lng']),
               icon: doc['visit'] == 2 ? greenLight: redLight,
-              onTap: doc['visit'] == 2 ? () {} : () {
+              onTap: doc['visit'] == 2 || calculateDistance(doc['lat'], doc['lng'], _center.latitude, _center.longitude) >= 0.05 ? () {} : () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => RLCertificationView(markerID: doc.id,)),
@@ -94,13 +95,14 @@ class _MapViewState extends State<MapView> {
                 markerId: MarkerId(doc.id),
                 position: LatLng(doc['lat'], doc['lng']),
                 icon: doc['visit'] == 2 ? greenLight: redLight,
-                onTap: doc['visit'] == 2 ? () {} : () {
+                onTap: doc['visit'] == 2 || calculateDistance(doc['lat'], doc['lng'], _center.latitude, _center.longitude) >= 0.05 ? () {} : () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => RLCertificationView(markerID: doc.id,)),
                   );
                 }
-              ))
+              )
+          )
           .toList();
 
       setState(() {
@@ -115,8 +117,9 @@ class _MapViewState extends State<MapView> {
       child: MaterialApp(
         home: Scaffold(
           body: GoogleMap(
-            myLocationEnabled: true,
+            myLocationEnabled: false,
             mapToolbarEnabled: false,
+            compassEnabled: false,
             markers: Set.from(_markers),
             onMapCreated: _onMapCreated,
             zoomGesturesEnabled: false,

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:green_light/models/user.dart';
 import 'package:green_light/screens/home/drawerview.dart';
+import 'package:green_light/screens/shared/loading.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
@@ -93,7 +94,7 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
 
         var a = dt[1].querySelector("a");
 
-        title_in.add(cp949.decodeString(a?.innerHtml as String));
+        title_in.add(cp949.decodeString(a?.innerHtml as String).trim());
       }
 
     }
@@ -260,12 +261,11 @@ Widget _buildFeedTab(TabController tabController, List<String?> title, List<Stri
                                   fit: BoxFit.fill,
                                 ),
                               ),
-                                Flexible(
-                                  child: Container(
+                              Flexible(
+                                child: Container(
                                   margin: EdgeInsets.only(left: 12.w),
                                   child: Text(
                                     title[index]!,
-                                    // "0000",
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700
@@ -280,58 +280,70 @@ Widget _buildFeedTab(TabController tabController, List<String?> title, List<Stri
                       );
                     },
                   ),
-                  ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: 10,
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
-                          child: Row(
-                            children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(32),
-                                child: Image.asset(
-                                  'assets/images/container.png',
-                                  width: 64.w,
-                                  height: 64.h,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 20.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.only(bottom: 2.h),
-                                      child: const Text(
-                                        'Soonmin',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
+                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    // stream: null,
+                    stream: FirebaseFirestore.instance.collection("community_events")
+                    .orderBy("date", descending: true).snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Loading();
+                      }
+                      final documents = snapshot.data!.docs;
+                      return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: documents.length > 10 ? 10 : documents.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final data = documents[index].data();
+                          return InkWell(
+                            child: Container(
+                              margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
+                              child: Row(
+                                children: <Widget>[
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(32),
+                                    child: Image.asset(
+                                      data['type'] == 0 ? 'assets/images/greenlight.png' : 'assets/images/redlight.png',
+                                      width: 64.w,
+                                      height: 64.h,
+                                      fit: BoxFit.fill,
                                     ),
-                                    Container(
-                                      padding: EdgeInsets.only(top: 2.h),
-                                      child: const Text(
-                                        '텀블러 사용을 진행했어요',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 20.w),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.only(bottom: 2.h),
+                                          child: Text(
+                                            data['nickname'],
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                        Container(
+                                          padding: EdgeInsets.only(top: 2.h),
+                                          child: Text(
+                                            data['type'] == 0 ? 'Achieved Greenlight ♥' : "Redlight Notification :)",
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        onTap: () {},
+                            ),
+                            onTap: () {},
+                          );
+                        },
                       );
-                    },
+                    }
                   )
                 ],
               ),

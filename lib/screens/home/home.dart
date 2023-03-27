@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:green_light/models/map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_light/screens/home/feedview.dart';
-import 'package:green_light/screens/home/groupview.dart';
-import 'package:green_light/screens/home/homeview.dart';
+import 'package:green_light/screens/home/groupview_sm.dart';
+import 'package:green_light/screens/home/homeview_sm.dart';
 import 'package:green_light/screens/home/mapview_for_device.dart';
+import 'package:green_light/screens/shared/loading.dart';
 import 'package:green_light/services/auth.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 
@@ -19,17 +21,46 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   // firebase의 유저 정보 연결
   final AuthService _auth = AuthService();
 
+  Location location = Location();
+  late LocationData myLoca;
+
+  List<Widget>? _widgetOptions;
+
   // 언더바로 4개의 컨테츠 제공하는 코드
-  final List<Widget> _widgetOptions = <Widget>[
-    HomeView(),
-    FeedPage(),
-    MapView(showMarkers: markers),
-    GroupPage(),
-  ];
+  // final List<Widget> _widgetOptions = <Widget>[
+  //   // HomeView(),
+  //   HomeView(location: myLoca),
+  //   FeedPage(),
+  //   MapView(showMarkers: markers, location: Location(),),
+  //   GroupPage(),
+  // ];
+
+  void newLocData(LocationData newLoc) {
+    setState(() {
+      myLoca = newLoc;
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    location.getLocation().then((location) {
+      setState(() {
+        myLoca = location;
+        _widgetOptions = <Widget>[
+          // HomeView(),
+          HomeView(myLoca: myLoca),
+          FeedPage(),
+          MapView(showMarkers: markers, location: Location(), locChange: newLocData,),
+          // MapView(showMarkers: markers),
+          GroupPage(),
+        ];
+      });
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -74,12 +105,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return _widgetOptions == null ? const Loading() : MultiProvider(
       providers: [ListenableProvider(create: (_) => MapProvider())],
       child: Scaffold(
           body: IndexedStack(
               index: _selectedIndex,
-              children: _widgetOptions,
+              children: _widgetOptions!,
           ),
           backgroundColor: Colors.lightGreenAccent[50],
           bottomNavigationBar: Container(

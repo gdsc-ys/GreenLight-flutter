@@ -161,13 +161,18 @@ Widget _myLocation(String address) {
             ),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.only(left: 4),
-          child: Text(
-            address,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              margin: const EdgeInsets.only(left: 4),
+              child: Text(
+                address,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ),
           ),
         ),
@@ -216,7 +221,7 @@ Widget _greenMessage() {
 Widget _messageDetail() {
   return Container(
     width: 345.w,
-    height: 40.h,
+    height: 50.h,
     alignment: Alignment.centerLeft,
     margin: EdgeInsets.only(top: 19.h),
     child: const Text(

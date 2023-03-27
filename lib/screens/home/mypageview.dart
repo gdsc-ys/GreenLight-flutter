@@ -260,17 +260,17 @@ Widget _heightWeightTitle() {
             ),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(left: 143.w),
-          child: InkWell(
-            child: SizedBox(
-              width: 64.w,
-              height: 20.h,
-              child: Image.asset('assets/images/edit.png'),
-            ),
-            onTap: () {},
-          ),
-        ),
+        // Container(
+        //   margin: EdgeInsets.only(left: 143.w),
+        //   child: InkWell(
+        //     child: SizedBox(
+        //       width: 64.w,
+        //       height: 20.h,
+        //       child: Image.asset('assets/images/edit.png'),
+        //     ),
+        //     onTap: () {},
+        //   ),
+        // ),
       ],
     ),
   );
@@ -439,15 +439,15 @@ Widget _achievementContent(int container, int greenLight, int reporting, int tum
             children: <Widget>[
               _greenlight(greenLight),
               _reporting(reporting),
-              _tumbler(tumbler),
-              _reusable(container),
+              // _tumbler(tumbler),
+              // _reusable(container),
             ],
           ),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AchievementView()),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => const AchievementView()),
+            // );
           },
         ),
       );
