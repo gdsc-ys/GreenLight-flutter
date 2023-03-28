@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:math';
 
+
+// This file is a form
+// When you tab red light on map
+// This view will come out after taking a picture
 class GreenLightView extends StatefulWidget {
   const GreenLightView({Key? key, required this.previousMessage}) : super(key: key);
 
-  // 이전 유저가 남긴 메세지 받아옴
+  // get a previous user's message
   final String previousMessage;
 
   @override
@@ -74,14 +78,12 @@ class _GreenLightViewState extends State<GreenLightView> {
 }
 
 Widget _buildRedLightPlaceName(TextEditingController placeNameController, String previousMessage) {
-  return Container(
-    child: Column(
-      children: <Widget>[
-        _placeName(),
-        _placeInput(placeNameController),
-        _myLocation(previousMessage),
-      ],
-    ),
+  return Column(
+    children: <Widget>[
+      _placeName(),
+      _placeInput(placeNameController),
+      _myLocation(previousMessage),
+    ],
   );
 }
 

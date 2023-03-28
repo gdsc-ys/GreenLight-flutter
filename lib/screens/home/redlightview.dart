@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:math';
 
+
+// This view pops out when you touch the floating button in map page.
+// You can see camera intially.
+// After that the form of alarming red light is provided.
 class RedLightView extends StatefulWidget {
   const RedLightView({Key? key, required this.address}) : super(key: key);
 
@@ -73,14 +77,12 @@ class _RedLightViewState extends State<RedLightView> {
 }
 
 Widget _buildRedLightPlaceName(TextEditingController placeNameController, String address) {
-  return Container(
-    child: Column(
-      children: <Widget>[
-        _placeName(),
-        _placeInput(placeNameController),
-        _myLocation(address),
-      ],
-    ),
+  return Column(
+    children: <Widget>[
+      _placeName(),
+      _placeInput(placeNameController),
+      _myLocation(address),
+    ],
   );
 }
 
@@ -192,15 +194,13 @@ Widget _buildRedLightMiddle() {
 Widget _buildRedLightGreenMessage(
     TextEditingController placeNameController,
     TextEditingController greenMessageController) {
-  return Container(
-    child: Column(
-      children: <Widget>[
-        _greenMessage(),
-        _messageDetail(),
-        _messageInput(greenMessageController),
-        _registrationButton(placeNameController, greenMessageController),
-      ],
-    ),
+  return Column(
+    children: <Widget>[
+      _greenMessage(),
+      _messageDetail(),
+      _messageInput(greenMessageController),
+      _registrationButton(placeNameController, greenMessageController),
+    ],
   );
 }
 

@@ -4,6 +4,9 @@ import 'package:green_light/screens/home/createaccountview.dart';
 import 'package:green_light/screens/shared/loading.dart';
 import 'package:green_light/services/auth.dart';
 
+
+// This is just a sign in file
+// As sign up does, this also utilize firebase Email&passwd authentication.
 class LoginView extends StatefulWidget {
 
   final Function? toggleView;
@@ -209,16 +212,12 @@ Widget _passwordInput(TextEditingController passwordController) {
 }
 
 Widget _buildSignUp() {
-  return Container(
-    // margin: EdgeInsets.only(top: 5.h),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        _accountNone(),
-        _signUp(),
-      ],
-    ),
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: <Widget>[
+      _accountNone(),
+      _signUp(),
+    ],
   );
 }
 
@@ -262,7 +261,7 @@ Widget _signUp() {
   );
 }
 
-Widget _buildLoginButton(TextEditingController emailController, TextEditingController passwordController, AuthService _auth) {
+Widget _buildLoginButton(TextEditingController emailController, TextEditingController passwordController, AuthService auth) {
   Color buttonColor = const Color(0xffABB2BA);
   if ((emailController.text.isNotEmpty) && (passwordController.text.isNotEmpty)) {
     buttonColor = const Color(0xff80CA4C);
@@ -283,7 +282,7 @@ Widget _buildLoginButton(TextEditingController emailController, TextEditingContr
             elevation: 0,
           ),
           onPressed: () async {
-            dynamic result = await _auth.signInWithEmailAndPassword(emailController.text, passwordController.text);
+            dynamic result = await auth.signInWithEmailAndPassword(emailController.text, passwordController.text);
 
             if (result == null){
               debugPrint("unfound user");

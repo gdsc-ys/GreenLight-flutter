@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_light/models/map.dart';
-import 'package:green_light/services/distance.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
@@ -24,26 +23,29 @@ class LocationService {
       LocationData? locationData;
       await location.changeSettings(accuracy: LocationAccuracy.high);
       try {
-        var _hasLocationPermission = await location.hasPermission();
+        var hasLocationPermission = await location.hasPermission();
 
-        if (_hasLocationPermission == PermissionStatus.granted) {
+        if (hasLocationPermission == PermissionStatus.granted) {
+          // ignore: use_build_context_synchronously
           grantedPermissionMethod(
             context, 
             locationData,
             updatePosition: updatePosition);
-        } else if (_hasLocationPermission == PermissionStatus.denied) {
-          var _permissionGranted = await location.requestPermission();
-          if (_permissionGranted == PermissionStatus.granted) {
+        } else if (hasLocationPermission == PermissionStatus.denied) {
+          var permissionGranted = await location.requestPermission();
+          if (permissionGranted == PermissionStatus.granted) {
+            // ignore: use_build_context_synchronously
             grantedPermissionMethod(
               context, 
               locationData, 
               updatePosition: updatePosition);
-          } else if (_permissionGranted == PermissionStatus.denied) {
+          } else if (permissionGranted == PermissionStatus.denied) {
+            // ignore: use_build_context_synchronously
             serviceDisabledMethod(context);
           }
         }
       } on PlatformException catch(e) {
-        debugPrint("${e.code}");
+        debugPrint(e.code);
       }
     }
 
@@ -52,20 +54,23 @@ class LocationService {
       LocationData? locationData,
       {Function? updatePosition}
     ) async {
-      var _hasLocationServiceEnabled = await location.serviceEnabled();
-      if (_hasLocationServiceEnabled) {
+      var hasLocationServiceEnabled = await location.serviceEnabled();
+      if (hasLocationServiceEnabled) {
+        // ignore: use_build_context_synchronously
         serviceEnabledMethod(
           context, 
           locationData,
           updatePosition: updatePosition);
       } else {
-        var _serviceEnabled = await location.requestService();
-        if (_serviceEnabled) {
+        var serviceEnabled = await location.requestService();
+        if (serviceEnabled) {
+          // ignore: use_build_context_synchronously
           serviceEnabledMethod(
             context, 
             locationData, 
             updatePosition: updatePosition);
         } else {
+          // ignore: use_build_context_synchronously
           serviceDisabledMethod(context);
         }
       }
@@ -77,6 +82,7 @@ class LocationService {
       {Function? updatePosition}
     ) async {
       locationData = await location.getLocation();
+      // ignore: use_build_context_synchronously
       Provider.of<MapProvider>(context, listen: false).updateCurrentLocation(
         LatLng(locationData.latitude!.toDouble(), locationData.longitude!.toDouble())
       );
@@ -87,7 +93,9 @@ class LocationService {
         ),
       );
 
+      // ignore: use_build_context_synchronously
       if (Provider.of<MapProvider>(context, listen: false).currentLatLng != null) {
+        // ignore: use_build_context_synchronously
         _getLocationUpdates(context, locationData);       
       }
     }
@@ -101,12 +109,6 @@ class LocationService {
       LocationData locationData,
     ) async {
       location.onLocationChanged.listen((event) {
-        final distance = calculateDistance(
-          event.latitude,  
-          event.longitude,
-          locationData.latitude,
-          locationData.longitude
-        );
         Provider.of<MapProvider>(context, listen: false).updateCurrentLocation(
           LatLng(event.latitude!.toDouble(), event.longitude!.toDouble())
         );

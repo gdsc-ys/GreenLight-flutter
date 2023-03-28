@@ -11,6 +11,10 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
+// This file is for feed part of our app
+// It contains education area and community area
+// First one is for news listing about ecology
+// Second one is for showing users' activities
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
   @override
@@ -18,18 +22,16 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin{
-  // 번갈아 작동하는 탭
   late TabController _tabController;
 
-  // DB 연결
   var db = FirebaseFirestore.instance;
 
-  // 네이버 뉴스 불러오기 위한 데이터들
+  // Lists for news crolling data
   List<String?> title = [];
   List<String?> link = [];
   List<String?> imgSrc = [];
 
-  // 현재 streaming되는 user data
+  // current user data
   String? userName = "";
   Timestamp? dateTime;
   int? height;
@@ -47,7 +49,6 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
 
   }
 
-  // 말 그대로 유저 정보 받아옴
   Future<void> _getUserInfo() async {
     GL_User? user = Provider.of<GL_User?>(context, listen: false);
     db.collection("users").where('uid', isEqualTo: user!.uid).get().then((userData) {
@@ -60,13 +61,15 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
     });
   }
 
-  // 말 그대로 뉴스 받아옴
+  // This function is optimized for NAVER news and its ecology tab..
+  // So if you want to get other sites' data
+  // You must modify this function.
   Future<void> _getNews() async {
     var url = 'https://news.naver.com/main/list.naver?mode=LS2D&mid=shm&sid1=102&sid2=252';
 
-    List<String?> title_in = [];
-    List<String?> link_in = [];
-    List<String?> imgSrc_in = [];
+    List<String?> titleIn = [];
+    List<String?> linkIn = [];
+    List<String?> imgsrcIn = [];
 
     var response = await http.get(Uri.parse(url));
 
@@ -84,17 +87,17 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
       if (dt.length == 1){
         var a = dt[0].querySelector("a");
 
-        title_in.add(cp949.decodeString(a?.innerHtml as String));
+        titleIn.add(cp949.decodeString(a?.innerHtml as String));
 
-        imgSrc_in.add('https://i0.wp.com/iammom.co.kr/wp-content/uploads/환경.jpg?w=800&ssl=1');
+        imgsrcIn.add('0');
       } else {
         var img = dt[0].querySelector("img");
 
-        imgSrc_in.add(img?.attributes['src']);
+        imgsrcIn.add(img?.attributes['src']);
 
         var a = dt[1].querySelector("a");
 
-        title_in.add(cp949.decodeString(a?.innerHtml as String).trim());
+        titleIn.add(cp949.decodeString(a?.innerHtml as String).trim());
       }
 
     }
@@ -102,14 +105,14 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
     for (var list in lists) {
       var a = list.querySelector("a");
 
-      link_in.add(a?.attributes['href']);
+      linkIn.add(a?.attributes['href']);
 
     }
 
     setState(() {
-      title = title_in;
-      imgSrc = imgSrc_in;
-      link = link_in;
+      title = titleIn;
+      imgSrc = imgsrcIn;
+      link = linkIn;
     });
   }
 
@@ -118,6 +121,7 @@ class _FeedPageState extends State<FeedPage> with SingleTickerProviderStateMixin
     super.dispose();
     _tabController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -178,7 +182,7 @@ Widget _buildFeedTop2() {
   );
 }
 
-// 링크 타고 뉴스로 감 브라우저 요청
+// call the link to get the news web page by users' browser.
 Future<void> callLink(String link) async {
   launch(link, forceWebView: false, forceSafariVC: false);
 }
@@ -186,7 +190,7 @@ Future<void> callLink(String link) async {
 Widget _buildFeedTab(TabController tabController, List<String?> title, List<String?> imgSrc, List<String?> link) {
   return Expanded(
     child: SizedBox(
-      height: 500,
+      height: 500.h,
       child: Padding(
         padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 12.h),
         child: Column(
@@ -254,7 +258,14 @@ Widget _buildFeedTab(TabController tabController, List<String?> title, List<Stri
                             children: <Widget>[
                               ClipRRect(
                                 borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-                                child: Image.network(
+                                // if the news web page doesn't return any image
+                                // then use our static default image.
+                                child: imgSrc[index]! == "0" ? Image.asset(
+                                  "assets/images/empty.png",
+                                  width: 64.w,
+                                  height: 64.h, 
+                                  fit: BoxFit.fill,
+                                  ) : Image.network(
                                   imgSrc[index]!,
                                   width: 64.w,
                                   height: 64.h,
@@ -281,7 +292,9 @@ Widget _buildFeedTab(TabController tabController, List<String?> title, List<Stri
                     },
                   ),
                   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    // stream: null,
+
+                    // get other users' and my recent activities.
+                    // at most 10 activities
                     stream: FirebaseFirestore.instance.collection("community_events")
                     .orderBy("date", descending: true).snapshots(),
                     builder: (context, snapshot) {
@@ -302,6 +315,7 @@ Widget _buildFeedTab(TabController tabController, List<String?> title, List<Stri
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(32),
                                     child: Image.asset(
+                                      // images vary from types
                                       data['type'] == 0 ? 'assets/images/greenlight.png' : 'assets/images/redlight.png',
                                       width: 64.w,
                                       height: 64.h,

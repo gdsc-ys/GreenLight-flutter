@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:green_light/services/auth.dart';
 
 
+// This file is for a user sign up form.
 class CreateAccountView extends StatefulWidget {
   final Function? toggleView;
   const CreateAccountView({Key? key, this.toggleView}) : super(key: key);
@@ -549,7 +550,7 @@ Widget _buildSignUpButton(TextEditingController emailController,
     TextEditingController passwordController, TextEditingController usernameController,
     TextEditingController yearController, TextEditingController monthController,
     TextEditingController dateController, TextEditingController heightController,
-    TextEditingController weightController, AuthService _auth,
+    TextEditingController weightController, AuthService auth,
     ) {
   Color buttonColor = const Color(0xffABB2BA);
   if ((emailController.text.isNotEmpty) && (passwordController.text.isNotEmpty)
@@ -575,8 +576,9 @@ Widget _buildSignUpButton(TextEditingController emailController,
           ),
           onPressed: () async {
             if (buttonColor == const Color(0xff80CA4C)) {
-
-              dynamic result = await _auth.registerWithEmailAndPassword(
+              
+              // just push input data to the authentication function and it will create an account.
+              await auth.registerWithEmailAndPassword(
                 emailController.text, 
                 passwordController.text,
                 usernameController.text,
@@ -585,7 +587,7 @@ Widget _buildSignUpButton(TextEditingController emailController,
                 dateController.text,
                 heightController.text,
                 weightController.text,
-                );
+              );
             }
           },
           child: const Text(

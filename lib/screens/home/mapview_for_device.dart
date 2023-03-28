@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_geocoder/geocoder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_geocoder_alternative/flutter_geocoder_alternative.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:green_light/models/user.dart';
@@ -18,58 +17,49 @@ import 'package:green_light/services/permission.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-// 유저의 현 위치 추적까지 있는 맵
+
+// This map file uses google map api.
+// And we added some additional functions.
+// Such as current user location, setting markers of firestore and camera shotting.
+// This file also reqeust to a location permission be granted
 class MapView extends StatefulWidget {
-  const MapView({required this.showMarkers, required this.location, required this.locChange, super.key});
+  const MapView({required this.showMarkers, super.key});
 
   final Future<Set<Marker>>? showMarkers;
-  final Function(LocationData newLoc) locChange;
-  final Location location;
   @override
   State<MapView> createState() => _MapViewState();
 }
 
 class _MapViewState extends State<MapView> {
 
-  GL_User? user;
-
-  Set<Marker> _showMarkers = {};
-
-
-  late GoogleMapController googleMapController;
-
-  LocationData? currentLocation;
-
-  DocumentReference<Map<String, dynamic>>? userRef;
-
-  BitmapDescriptor userIcon = BitmapDescriptor.defaultMarker;
-
   var db = FirebaseFirestore.instance;
 
-  List<Marker> _markers = [];
+  Location location = Location();
 
+  late GoogleMapController googleMapController;
+  LocationData? currentLocation;
+  final List<Marker> _markers = [];
   String _mapStyle = "";
 
+  GL_User? user;
+  DocumentReference<Map<String, dynamic>>? userRef;
+  BitmapDescriptor userIcon = BitmapDescriptor.defaultMarker;
   int? reporting;
-
   String? userName;
 
   File? _image;
   final picker = ImagePicker();
 
-  Future<void> getCurrentLocation() async {
-    // 위치 업데이트
-    widget.location.onLocationChanged.listen(
+  Future<void> _getCurrentLocation() async {
+    location.onLocationChanged.listen(
       (newLoc) {
         setState(() {
-          widget.locChange(newLoc);
           currentLocation = newLoc;
           _markers.add(
             Marker(
-              markerId: MarkerId("currentLocation"),
+              markerId: const MarkerId("currentLocation"),
               icon: userIcon,
               position: LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
             )
@@ -93,20 +83,16 @@ class _MapViewState extends State<MapView> {
   void _onMapCreated(GoogleMapController controller) async {
     googleMapController = controller;
     googleMapController.setMapStyle(_mapStyle);
-    // 현위치업데이트
-    getCurrentLocation();
-    // 현위치를 유저의 것으로 반영
+    _getCurrentLocation();
     _getUserLocation(context);
-    // 레드라이트 불러옴
     _loadMarkers();
-    // 레드라이트들 변화 스트리밍
     _subscribeToMarkers();
 
     widget.showMarkers?.then((value) {
       setState(() {
         _markers.add(
           Marker(
-            markerId: MarkerId("currentLocation"),
+            markerId: const MarkerId("currentLocation"),
             icon: userIcon,
             position: LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
           )
@@ -117,7 +103,7 @@ class _MapViewState extends State<MapView> {
 
   void userIconSet() async {
     await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(), 
+      const ImageConfiguration(), 
       "assets/images/user_location.png").then(
         (icon) {
           setState(() {
@@ -137,22 +123,22 @@ class _MapViewState extends State<MapView> {
     });
   }
   
-  Future getImage(ImageSource imageSource) async {
+  Future _getImageFromCamera(ImageSource imageSource) async {
     final image = await picker.pickImage(source: imageSource);
 
     var param = false;
 
     setState(() {
       if (image != null){
-        _image = File(image.path); // 가져온 이미지를 _image에 저장
+        _image = File(image.path);
 
         param = true;
       }
     });
 
     if (param){
-
       var address = await _getAddress();
+      // ignore: use_build_context_synchronously
       List<String>? redlightTitleDescription = await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => RedLightView(address: address,))
@@ -199,7 +185,6 @@ class _MapViewState extends State<MapView> {
   void initState() {
     super.initState();
 
-    // 유저 아이콘 초기화 <= 솔직히 필요없음
     userIconSet();
 
     user = Provider.of<GL_User?>(context, listen: false);
@@ -208,7 +193,7 @@ class _MapViewState extends State<MapView> {
       _mapStyle = value
     });
 
-    widget.location.getLocation().then(
+    location.getLocation().then(
       (location) {
         setState(() {
           currentLocation = location;
@@ -219,39 +204,14 @@ class _MapViewState extends State<MapView> {
   }
 
 
-  // 사진 찍었을 때 현재 위치 주소를 한글로 돌려줌
-  // ※ 추가해야할 것: firebase에 마커의 형태로 red light 보이도록
+  // get an address of current location
   Future<String> _getAddress() async {
-    final location = new Coordinates(currentLocation!.latitude, currentLocation!.longitude);
-    var address = await Geocoder.local.findAddressesFromCoordinates(location);
-    var first = address.first;
-
-    var _baseUrl = 'https://translation.googleapis.com/language/translate/v2';
-
-    var translateKey = "AIzaSyCOFoK0d47ESiNBgJPlnwMv-y65W1XvFOo";
-
-    var to = 'ko';
-
-    var result_cloud_google = first.addressLine;
-
-    // 번역 API
-
-    var response = await http.post(
-      Uri.parse('${_baseUrl}?target=${to}&key=${translateKey}&q=${first.addressLine}'),
-    );
-
-    if (response.statusCode == 200) {
-      var dataJson = jsonDecode(response.body);
-      result_cloud_google = dataJson['data']['translations'][0]['translatedText'];
-    }
-
-    return result_cloud_google!;
-
+    var address = await Geocoder().getAddressFromLonLat(currentLocation!.longitude!, currentLocation!.latitude!);
+    return address;
   }
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -263,7 +223,6 @@ class _MapViewState extends State<MapView> {
           zoomControlsEnabled: false,
           myLocationButtonEnabled: false,
           rotateGesturesEnabled: false,
-          scrollGesturesEnabled: false,
           tiltGesturesEnabled: false,
           
           markers: Set.from(_markers),
@@ -279,7 +238,7 @@ class _MapViewState extends State<MapView> {
           backgroundColor: const Color(0xff5DC86C),
           child: const Icon(Icons.add),
           onPressed: () async {
-            getImage(ImageSource.camera);
+            _getImageFromCamera(ImageSource.camera);
           },
         ),
       ),
@@ -292,11 +251,11 @@ class _MapViewState extends State<MapView> {
         .get();
 
     BitmapDescriptor redLight= await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+      const ImageConfiguration(),
       "assets/images/redspot.png"
     );
     BitmapDescriptor greenLight= await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+      const ImageConfiguration(),
       "assets/images/greenspot.png"
     );
 
@@ -324,11 +283,11 @@ class _MapViewState extends State<MapView> {
   void _subscribeToMarkers() async {
 
     BitmapDescriptor redLight= await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+      const ImageConfiguration(),
       "assets/images/redspot.png"
     );
     BitmapDescriptor greenLight= await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+      const ImageConfiguration(),
       "assets/images/greenspot.png"
     );
     FirebaseFirestore.instance
@@ -359,7 +318,7 @@ class _MapViewState extends State<MapView> {
   Future<void> _getUserLocation(BuildContext context) async {
     PermissionUtils.requestPermission(Permission.location, context,
       isOpenSettings: true, permissionGrant: () async {
-        print("already granted");
+        debugPrint("already granted");
       },
       permissionDenied: () {
         Fluttertoast.showToast(

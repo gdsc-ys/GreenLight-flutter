@@ -7,11 +7,13 @@ import 'package:provider/provider.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:green_light/services/distance.dart';
+import 'package:pedometer/pedometer.dart';
 
+
+// This file is Home Tab of the under bar.
+// Several data are gonna be showed in this view. 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key, required this.myLoca});
-
-  final LocationData myLoca;
+  const HomeView({super.key});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -20,7 +22,6 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   GL_User? user;
-  QuerySnapshot<Map<String, dynamic>>? greenlight;
   List<double> near = [10000.0, 10000.0];
   List<int> index = [-1, -1];
   List<String> textValue = ['', ''];
@@ -28,8 +29,6 @@ class _HomeViewState extends State<HomeView> {
   List<String> time = ['', ''];
   List<String> imgURL = ['', ''];
   List<String> address = ['', ''];
-  List<String> stride = ['', ''];
-  Map<String, num> myInfo = {};
 
   String? userName = "";
   Timestamp? dateTime;
@@ -37,7 +36,15 @@ class _HomeViewState extends State<HomeView> {
   int? weight;
 
   var db = FirebaseFirestore.instance;
-  // 말 그대로 유저 정보 받아옴
+
+  @override
+  void initState() {
+    super.initState();
+
+    user = Provider.of<GL_User?>(context, listen: false);
+    _getUserInfo();
+  }
+
   Future<void> _getUserInfo() async {
     GL_User? user = Provider.of<GL_User?>(context, listen: false);
     db.collection("users").where('uid', isEqualTo: user!.uid).get().then((userData) {
@@ -50,31 +57,6 @@ class _HomeViewState extends State<HomeView> {
       });
     });
 
-  }
-
-  Future<void> info() async {
-    db.collection('users').where('uid', isEqualTo: user!.uid).get().then((users) {
-      setState(() {
-        myInfo['steps'] = users.docs[0]['steps'];
-        myInfo['height']= users.docs[0]['height'];
-        myInfo['weight'] = users.docs[0]['weight'];
-        myInfo['stride'] = myInfo['height']! * 0.45 / 100;
-        double myCalories = (myInfo['stride']! * myInfo['steps']! * 60) / ((-3685.1683 * myInfo['stride']! + 7977.707) * (0.9 * myInfo['weight']! / 15));
-        myInfo['calories'] = (myCalories * 100).round() / 100;
-        myInfo['trees'] = ((myInfo['steps']! / 123) * 100).round() / 100;
-        myInfo['CO2'] = (myInfo['steps']! * 0.0147 * 100).round() / 100;
-      });
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    user = Provider.of<GL_User?>(context, listen: false);
-    _getUserInfo();
-
-    info();
   }
 
   String distCalcul(double dist) {
@@ -109,6 +91,10 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+
+    // our health data calculation reference
+    // under korean writings are just instructions for our team members
+
     // https://thankspizza.tistory.com/77
     // 걷기 속도는 일정하다고 가정하면
     // 몇 분 걸었는지 알아야함 -> 걷기로 가정하면 운동계수 0.9
@@ -128,32 +114,51 @@ class _HomeViewState extends State<HomeView> {
     // 3. tree - step / 123 (소숫점까지 표시)
     // 4. CO2 - step * 0.0147kg
 
-    return user == null ? const Loading() : StreamBuilder<LocationData>(
+    // First of all, streaming user location data
+    return user == null || height == null? const Loading() : StreamBuilder<LocationData>(
       stream: Location().onLocationChanged,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Loading();
         }
         final myLoc = snapshot.data!;
-        return SafeArea(
-          child: Scaffold(
-            endDrawer: DrawerView(userName: userName),
-            body: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xffFFFFFF),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    _buildFeedTop1(),
-                    today(),
-                    redLight(myLoc),
-                  ],
+
+        // And run a pedometer streaming
+        // Followings are respective calculating data
+        return StreamBuilder<StepCount>(
+          stream: Pedometer.stepCountStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Loading();
+            }
+            final steps = snapshot.data!.steps;
+            final stride = height! * 0.45 / 100;
+            double myCalories = (stride * steps * 60) / ((-3685.1683 * stride + 7977.707) * (0.9 * weight! / 15));
+            final calories = (myCalories * 100).round() / 100;
+            final trees = ((steps / 123) * 100).round() / 100;
+            final CO2 = (steps * 0.0147 * 100).round() / 100;
+
+            return SafeArea(
+              child: Scaffold(
+                endDrawer: DrawerView(userName: userName),
+                body: Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xffFFFFFF),
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        _buildFeedTop1(),
+                        today(steps, calories, trees, CO2),
+                        redLight(myLoc, stride),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          }
         );
       }
     );
@@ -183,13 +188,13 @@ class _HomeViewState extends State<HomeView> {
   // L todayText widget
   // L stepAndCalorie widget
   // L treeAndCo2 widget
-  Widget today() {
+  Widget today(int steps, double calories, double trees, double CO2) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget> [
         todayText(),
-        stepAndCalorie(),
-        treeAndCo2(),
+        stepAndCalorie(steps, calories),
+        treeAndCo2(trees, CO2),
       ],
     );
   }
@@ -204,7 +209,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget stepAndCalorie() {
+  Widget stepAndCalorie(int steps, double calories) {
     return Container(
       width: 342.w,
       height: 82.h,
@@ -244,7 +249,7 @@ class _HomeViewState extends State<HomeView> {
               Container(
                 margin: EdgeInsets.only(top: 3.h),
                 child: Text(
-                  myInfo['steps'].toString(),
+                  steps.toString(),
                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -268,7 +273,7 @@ class _HomeViewState extends State<HomeView> {
               Container(
                 margin: EdgeInsets.only(top: 3.h),
                 child: Text(
-                  "${myInfo['calories']} kcal",
+                  "$calories kcal",
                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -279,7 +284,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget treeAndCo2() {
+  Widget treeAndCo2(double trees, double CO2) {
     return Row(
       children: [
         //tree
@@ -322,7 +327,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
               Text(
-                "${myInfo['trees']} ▲",
+                "$trees ▲",
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               ),
             ],
@@ -369,7 +374,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
               ),
               Text(
-                "${myInfo['CO2']} ▽",
+                "$CO2 ▽",
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xffFFFFFF)),
               ),
             ],
@@ -384,14 +389,20 @@ class _HomeViewState extends State<HomeView> {
   // L redLightText widget
   // L firstLight widget
   // L secondLight widget
-  Widget redLight(LocationData myLoc) {
-    return myInfo['stride'] == null ? const Loading() : StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+  Widget redLight(LocationData myLoc, double stride) {
+
+    // Streaming green light instances.
+    // Which of the greenlights exist near by the user.
+    // We select 2 of the nearest instance.
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: db.collection('greenlights').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Loading();
         }
         final documents = snapshot.data!.docs;
+
+        // These are selecting the nearest one processes.
         for (int i = 0; i < documents.length; i++){
           var newGreenlight = documents[i];
           var compareDist = calculateDistance(myLoc.latitude, myLoc.longitude, newGreenlight['lat'], newGreenlight['lng']);
@@ -417,8 +428,8 @@ class _HomeViewState extends State<HomeView> {
         if (near[0] == double.infinity) {
           near.removeAt(0);
         }
-        time[0] = timeCalcul(near[0]*1000.toDouble(), myInfo['stride']!);
-        time[1] = timeCalcul(near[1]*1000.toDouble(), myInfo['stride']!);
+        time[0] = timeCalcul(near[0]*1000.toDouble(), stride);
+        time[1] = timeCalcul(near[1]*1000.toDouble(), stride);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget> [

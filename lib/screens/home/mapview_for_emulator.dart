@@ -5,9 +5,11 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:green_light/screens/home/rlcertificationview.dart';
 import 'package:green_light/services/distance.dart';
-import 'package:location/location.dart';
 
-// 단순히 마커 표시하는 기능하고 마커 onTap기능만 있는 맵
+// This file is just for emulators since getting location issue of our place.
+// So we just set camera on our place.
+// And ommitted current user location function.
+// JUST FOR EMULATORS
 class MapView extends StatefulWidget {
   const MapView({required this.showMarkers, super.key});
 
@@ -20,6 +22,8 @@ class _MapViewState extends State<MapView> {
 
   late GoogleMapController _mapController;
   List<Marker> _markers = [];
+  String _mapStyle = "";
+  final LatLng _center = const LatLng(37.561563, 126.937433);
 
   @override
   void initState() {
@@ -29,14 +33,9 @@ class _MapViewState extends State<MapView> {
         _mapStyle = value
       });
     });
-
     _loadMarkers();
     _subscribeToMarkers();
   }
-
-  String _mapStyle = "";
-
-  LatLng _center = LatLng(37.561563, 126.937433);
 
   void _onMapCreated(GoogleMapController controller) async {
     _mapController = controller;
@@ -49,11 +48,11 @@ class _MapViewState extends State<MapView> {
         .get();
 
     BitmapDescriptor redLight= await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+      const ImageConfiguration(),
       "assets/images/redspot.png"
     );
     BitmapDescriptor greenLight= await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+      const ImageConfiguration(),
       "assets/images/greenspot.png"
     );
 
@@ -79,11 +78,11 @@ class _MapViewState extends State<MapView> {
   void _subscribeToMarkers() async {
 
     BitmapDescriptor redLight= await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+      const ImageConfiguration(),
       "assets/images/redspot.png"
     );
     BitmapDescriptor greenLight= await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+      const ImageConfiguration(),
       "assets/images/greenspot.png"
     );
     FirebaseFirestore.instance

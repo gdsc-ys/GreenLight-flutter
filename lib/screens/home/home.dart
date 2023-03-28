@@ -4,11 +4,8 @@ import 'package:green_light/models/map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_light/screens/home/feedview.dart';
 import 'package:green_light/screens/home/groupview_sm.dart';
-import 'package:green_light/screens/home/homeview_sm.dart';
+import 'package:green_light/screens/home/homeview_for_device.dart';
 import 'package:green_light/screens/home/mapview_for_device.dart';
-import 'package:green_light/screens/shared/loading.dart';
-import 'package:green_light/services/auth.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 
@@ -21,45 +18,19 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // firebase의 유저 정보 연결
-  final AuthService _auth = AuthService();
+  
+  // an under bar
+  final List<Widget> _widgetOptions = <Widget>[
+    const HomeView(),
+    const FeedPage(),
+    MapView(showMarkers: markers, ),
+    const GroupPage(),
+  ];
 
-  Location location = Location();
-  late LocationData myLoca;
 
-  List<Widget>? _widgetOptions;
-
-  // 언더바로 4개의 컨테츠 제공하는 코드
-  // final List<Widget> _widgetOptions = <Widget>[
-  //   // HomeView(),
-  //   HomeView(location: myLoca),
-  //   FeedPage(),
-  //   MapView(showMarkers: markers, location: Location(),),
-  //   GroupPage(),
-  // ];
-
-  void newLocData(LocationData newLoc) {
-    setState(() {
-      myLoca = newLoc;
-    });
-  }
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    location.getLocation().then((location) {
-      setState(() {
-        myLoca = location;
-        _widgetOptions = <Widget>[
-          // HomeView(),
-          HomeView(myLoca: myLoca),
-          FeedPage(),
-          MapView(showMarkers: markers, location: Location(), locChange: newLocData,),
-          // MapView(showMarkers: markers),
-          GroupPage(),
-        ];
-      });
-    });
   }
 
   void _onItemTapped(int index) {
@@ -68,7 +39,8 @@ class _HomeState extends State<Home> {
     });
   }
 
-  // 쓰레기통 마커 불러오려고 쓴 건데 일단은 보류하는 기능
+  // We initially planned to use garbagecan data
+  // But it has somewhat postponed until now
   static Future<Set<Marker>> get markers async {
     var db = FirebaseFirestore.instance;
     Set<Marker> _showMarkers = {};
@@ -76,7 +48,7 @@ class _HomeState extends State<Home> {
 
     BitmapDescriptor garbage_box = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(),
-      "assets/style/recycle-symbol.png"
+      "assets/images/recycle-symbol.png"
     );
 
     BitmapDescriptor redLight= await BitmapDescriptor.fromAssetImage(
@@ -85,7 +57,7 @@ class _HomeState extends State<Home> {
     );
 
     for (int i = 0; i < garbages.size; i++){
-      print(garbages.docs[i]['name']);
+      debugPrint(garbages.docs[i]['name']);
       _showMarkers.add(
         Marker(
           markerId: MarkerId(garbages.docs[i]['name']),
@@ -98,19 +70,17 @@ class _HomeState extends State<Home> {
     return _showMarkers;
   }
 
-  // 언더바 회전을 위한 인덱스
+  // an index for under bar
   int _selectedIndex = 0;
-
-  // 아래는 언더바 뷰
 
   @override
   Widget build(BuildContext context) {
-    return _widgetOptions == null ? const Loading() : MultiProvider(
+    return MultiProvider(
       providers: [ListenableProvider(create: (_) => MapProvider())],
       child: Scaffold(
           body: IndexedStack(
               index: _selectedIndex,
-              children: _widgetOptions!,
+              children: _widgetOptions,
           ),
           backgroundColor: Colors.lightGreenAccent[50],
           bottomNavigationBar: Container(

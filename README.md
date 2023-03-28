@@ -1,17 +1,50 @@
-# green_light
+# GreenLight
 
-A new Flutter project.
+## Actually, this app is made for Galaxy phone maybe Galaxy note 8.
+## But ridiculuously, the designers designed it with iPhone size.
+## We are going to modify those non-senses soon.
 
-lib/ <- 이 안에서 수정 하면 됨
+### 1. Set up
 
--- models/ <- 데이터를 특정 자료구조로 만들 때 쓸 디렉토리
+앱 완성되면
+VM ware에서 window 하나 열고 테스트 한 뒤에 적을게요
 
--- services/ <- firebase 기능 이용하는 파일 screens 쪽에서 import해서 사용
+### 2. Firebase Services
 
--- screens/ <- 종류에 따라 위젯을 담음
+> * Authentication - Email & Password
+> * Firestore
+>> Here are several tables for our database.
 
----- authenticate/ <- 로그인/회원가입 위젯
+------------------------------
+![DB Diagram](GreenLight.png)
+------------------------------
 
----- home/ <- 홈, 피드, 맵, 그룹 관련 위젯
 
----- shared/ <- 다른 위젯에서 쓸 이너 위젯 ex) loading 뷰
+> * Storage - red_lights/{uid_timestamp} photo files
+
+
+### 3. Branches
+
+> * main - comprehensive outputs
+> * Yu - design to dart files
+> * map - focused on map and feed 
+> * sm - focused on home and group
+
+### 4. Descriptions of Core files
+
+ㅡㅡ models
+ㅡㅡㅡㅡ map.dart, user.dart: each file is a custom data structure.
+
+##### Some of device/emulator descerted files are have certain issues.
+##### Such as a getting location issue, a pedometer sensor issue. 
+
+ㅡㅡ screens/home
+ㅡㅡㅡㅡ homeview_for_device.dart: provide comprehensive data for users
+ㅡㅡㅡㅡ feedview.dart: provide news and others users' activities
+ㅡㅡㅡㅡ mapview_for_device.dart: provide user's current location on map, red/greenlight markers, on camera actions
+ㅡㅡㅡㅡ groupview.dart: ~~~~~~~
+
+
+### 5. Actual app running shots
+
+완성되면 올릴게요~

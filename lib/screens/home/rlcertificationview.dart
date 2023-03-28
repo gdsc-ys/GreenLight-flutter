@@ -10,6 +10,11 @@ import 'package:green_light/screens/shared/loading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+
+// When the place of the marker visited under 2 amounts.
+// Then this page will be opened.
+// And this file contains camera opening and provides you a form.
+// Which is about registering red light to green light on the map.
 class RLCertificationView extends StatefulWidget {
   const RLCertificationView({Key? key, required this.markerID}) : super(key: key);
 
@@ -23,20 +28,18 @@ class _RLCertificationViewState extends State<RLCertificationView> {
   final db = FirebaseFirestore.instance;
 
   GL_User? user;
+  DocumentReference<Map<String, dynamic>>? userRef;
+  String? userName;
 
   File? _image;
   final picker = ImagePicker();
 
   DocumentReference<Map<String, dynamic>>? documentRef;
-  DocumentReference<Map<String, dynamic>>? userRef;
-
-
   String? imageURL;
   String? message;
   int? visit;
   int? greenLight;
   String? imagePath;
-  String? userName;
 
   bool loadingFlag = false;
   @override
@@ -46,14 +49,12 @@ class _RLCertificationViewState extends State<RLCertificationView> {
 
     documentRef = db.collection("greenlights").doc(widget.markerID);
 
-
     _getRedLightInfo(widget.markerID);
     _getUserInfo();
   }
 
   void _getRedLightInfo(String markerID) {
     documentRef!.get().then((DocumentSnapshot<Map<String, dynamic>> value) {
-
       setState(() {
         imageURL = value.data()!['imageURL'];
         message = value.data()!['message'];
@@ -66,7 +67,6 @@ class _RLCertificationViewState extends State<RLCertificationView> {
 
   void _getUserInfo() {
     db.collection("users").where("uid", isEqualTo: user!.uid).get().then((QuerySnapshot<Map<String, dynamic>> value) {
-
       setState(() {
         userRef = value.docs[0].reference;
         greenLight = value.docs[0].data()['greenlight'];
@@ -83,7 +83,7 @@ class _RLCertificationViewState extends State<RLCertificationView> {
     setState(() {
       loadingFlag = true;
       if (image != null){
-        _image = File(image.path); // 가져온 이미지를 _image에 저장
+        _image = File(image.path);
 
         param = true;
       }
@@ -91,6 +91,7 @@ class _RLCertificationViewState extends State<RLCertificationView> {
 
     if (param){
 
+      // ignore: use_build_context_synchronously
       List<String>? redlightTitleDescription = await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => GreenLightView(previousMessage: message!,))
@@ -121,12 +122,14 @@ class _RLCertificationViewState extends State<RLCertificationView> {
           };
           await db.collection("community_events").add(dataOfCommunityEvent);
           
+          // ignore: use_build_context_synchronously
           Navigator.pop(context);
         } catch (e) {
           debugPrint("file is not uploaded");
           debugPrint(e.toString());
         }
       } else {
+        // ignore: use_build_context_synchronously
         Navigator.pop(context);
       }
     }

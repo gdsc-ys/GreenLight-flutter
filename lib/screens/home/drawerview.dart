@@ -1,15 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:green_light/models/user.dart';
-import 'package:green_light/screens/home/managegroupsview.dart';
 import 'package:green_light/screens/home/mypageview.dart';
 import 'package:green_light/services/auth.dart';
 import 'package:provider/provider.dart';
 
+
+// This file is a drawer for a right upper hamburger bar.
 class DrawerView extends StatelessWidget {
   const DrawerView({Key? key, required this.userName}) : super(key: key);
 
+  // ignore: prefer_typing_uninitialized_variables
   final userName;
 
   @override
@@ -46,7 +47,6 @@ Widget _buildMyPage(String userName) {
 Widget _myPage() {
   return Container(
     alignment: Alignment.centerLeft,
-    // margin: EdgeInsets.only(left: 24.w),
     margin: EdgeInsets.only(left: 20.w),
     child: const Text(
       'My Page',
@@ -66,7 +66,6 @@ Widget _modifyMyPage(String userName) {
       return InkWell(
         child: Container(
           margin: EdgeInsets.only(top: 36.h),
-          // padding: EdgeInsets.only(left: 24.w),
           padding: EdgeInsets.only(left: 20.w),
           child: Row(
             children: <Widget>[
@@ -91,7 +90,6 @@ Widget _modifyMyPage(String userName) {
                     Container(
                       padding: EdgeInsets.only(bottom: 1.h),
                       child: Text(
-                        // 'User Name',
                         userName,
                         style: const TextStyle(
                           fontSize: 18,
@@ -124,6 +122,7 @@ Widget _modifyMyPage(String userName) {
           ),
         ),
         onTap: () {
+          // moving to specific mypage
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const MyPageView()),
@@ -148,9 +147,7 @@ Widget _buildSettings() {
     child: Column(
       children: <Widget>[
         _settings(),
-        // _manageGroups(),
         _logout(),
-        // _appNotifications(),
       ],
     ),
   );
@@ -159,7 +156,6 @@ Widget _buildSettings() {
 Widget _settings() {
   return Container(
     alignment: Alignment.centerLeft,
-    // margin: EdgeInsets.only(left: 24.w),
     margin: EdgeInsets.only(left: 20.w),
     child: const Text(
       'Settings',
@@ -172,159 +168,54 @@ Widget _settings() {
   );
 }
 
-Widget _manageGroups() {
-  return Builder(
-      builder: (context) {
-        return InkWell(
-          child: Container(
-            margin: EdgeInsets.only(top: 36.h),
-            // padding: EdgeInsets.only(left: 24.w),
-            padding: EdgeInsets.only(left: 20.w),
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: 40.w,
-                  height: 40.h,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffE9EAEC),
-                  ),
-                  child: const Icon(
-                    Icons.manage_accounts,
-                    size: 25,
-                    color: Color(0xffC3C8CE),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 12.w),
-                  child: const Text(
-                    'Manage Groups',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 67.w),
-                  child: const Icon(
-                    Icons.arrow_forward_ios,
-                    color: Color(0xffC3C8CE),
-                    size: 25,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ManageGroupsView()),
-            );
-          },
-        );
-      }
-  );
-}
-
 Widget _logout() {
-  final AuthService _auth = AuthService();
-  return Builder(
-      builder: (context) {
-        return InkWell(
-          child: Container(
-            margin: EdgeInsets.only(top: 36.h),
-            // padding: EdgeInsets.only(left: 24.w),
-            padding: EdgeInsets.only(left: 20.w),
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: 40.w,
-                  height: 40.h,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffE9EAEC),
-                  ),
-                  child: const Icon(
-                    Icons.logout,
-                    size: 25,
-                    color: Color(0xffC3C8CE),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 12.w),
-                  child: const Text(
-                    'Logout',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 136.w),
-                  child: const Icon(
-                    Icons.arrow_forward_ios,
-                    color: Color(0xffC3C8CE),
-                    size: 25,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          onTap: () async {
-            await _auth.signOut();
-          },
-        );
-      }
-  );
-}
-
-Widget _appNotifications() {
-  var switchValue = false;
+  final AuthService auth = AuthService();
   return Builder(
     builder: (context) {
-      return Container(
-        margin: EdgeInsets.only(top: 36.h),
-        // padding: EdgeInsets.only(left: 24.w),
-        padding: EdgeInsets.only(left: 20.w),
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: 40.w,
-              height: 40.h,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xffE9EAEC),
-              ),
-              child: const Icon(
-                Icons.notifications,
-                size: 25,
-                color: Color(0xffC3C8CE),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 12.w),
-              child: const Text(
-                'App Notifications',
-                style: TextStyle(
-                fontSize: 18,
-                  fontWeight: FontWeight.w600,
+      return InkWell(
+        child: Container(
+          margin: EdgeInsets.only(top: 36.h),
+          padding: EdgeInsets.only(left: 20.w),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 40.w,
+                height: 40.h,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xffE9EAEC),
+                ),
+                child: const Icon(
+                  Icons.logout,
+                  size: 25,
+                  color: Color(0xffC3C8CE),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 22.w),
-              child: CupertinoSwitch(
-                value: switchValue,
-                onChanged: (value) {
-                  switchValue = value;
-                },
-              )
-            ),
-          ],
+              Container(
+                margin: EdgeInsets.only(left: 12.w),
+                child: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 136.w),
+                child: const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Color(0xffC3C8CE),
+                  size: 25,
+                ),
+              ),
+            ],
+          ),
         ),
+        onTap: () async {
+          await auth.signOut();
+        },
       );
-    },
+    }
   );
 }

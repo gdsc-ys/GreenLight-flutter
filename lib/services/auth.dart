@@ -1,20 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:green_light/models/user.dart';
 
 class AuthService {
 
-  // firebase 유저 정보 받아옴
+  // Get firebase's authentication service
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   var db = FirebaseFirestore.instance;
 
-  // 유저 모델 커스터마이징
+  // User model customizing
   GL_User? _userFromFirebaseUser(User? user) {
     return user != null ? GL_User(uid: user.uid) : null;
   }
 
-  // 유저 모델 데이터 스트리밍 전달
+  // User model data streaming transmission
   Stream<GL_User?> get user {
     return _auth.authStateChanges().map(_userFromFirebaseUser);
   }
@@ -28,7 +29,7 @@ class AuthService {
 
       return _userFromFirebaseUser(user);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -59,11 +60,10 @@ class AuthService {
 
         db.collection("users").add(data);
       }
-      // initial user data 설정 필요 -> 회원 가입시 ~~한 정보 추가~~
       
       return _userFromFirebaseUser(user);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -73,7 +73,7 @@ class AuthService {
     try {
       return await _auth.signOut();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }

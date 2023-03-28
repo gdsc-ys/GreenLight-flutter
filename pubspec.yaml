@@ -50,10 +50,10 @@ dependencies:
   html: ^0.15.2
   cp949_codec: ^1.0.0
   url_launcher: ^6.1.10
-  flutter_geocoder: ^0.2.2-nullsafety
   image_picker: ^0.8.7
   firebase_storage: ^11.0.15
   pedometer: ^3.0.0
+  flutter_geocoder_alternative: ^1.0.3
 
 dev_dependencies:
   flutter_test:
