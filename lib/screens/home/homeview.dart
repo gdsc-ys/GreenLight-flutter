@@ -41,7 +41,6 @@ class _HomeViewState extends State<HomeView> {
         myLoca = location;
       });
     });
-    print('plz');
   }
 
   var db = FirebaseFirestore.instance;
@@ -54,37 +53,15 @@ class _HomeViewState extends State<HomeView> {
         dateTime = userData.docs[0].data()['date_of_birth'];
         height = userData.docs[0].data()['height'];
         weight = userData.docs[0].data()['weight'];
-      });
-    });
-  }
 
-  Future<void> info() async {
-    db.collection('users').where('uid', isEqualTo: widget.uid).get().then((users) {
-      setState(() {
-        // for (int i = 0; i < users.size; i++) {
-        //   print('im herre@@@@@@@@@@@@@@@@@@@@@@@@@@');
-        //   if (users.docs[i]['uid'] == widget.uid) {
-        //     print(users.docs[i]['uid']);
-        //     myInfo['steps'] = users.docs[i]['steps'];
-        //     myInfo['height']= users.docs[i]['height'];
-        //     myInfo['weight'] = users.docs[i]['weight'];
-        //     myInfo['stride'] = myInfo['height']! * 0.45 / 100;
-        //     double myCalories = (myInfo['stride']! * myInfo['steps']! * 60) / ((-3685.1683 * myInfo['stride']! + 7977.707) * (0.9 * myInfo['weight']! / 15));
-        //     myInfo['calories'] = (myCalories * 100).round() / 100;
-        //     myInfo['trees'] = ((myInfo['steps']! / 123) * 100).round() / 100;
-        //     myInfo['CO2'] = (myInfo['steps']! * 0.0147 * 100).round() / 100;
-        //     break;
-        //   }
-        // }
-        myInfo['steps'] = users.docs[0]['steps'];
-        myInfo['height']= users.docs[0]['height'];
-        myInfo['weight'] = users.docs[0]['weight'];
+        myInfo['steps'] = userData.docs[0]['steps'];
+        myInfo['height']= userData.docs[0]['height'];
+        myInfo['weight'] = userData.docs[0]['weight'];
         myInfo['stride'] = myInfo['height']! * 0.45 / 100;
         double myCalories = (myInfo['stride']! * myInfo['steps']! * 60) / ((-3685.1683 * myInfo['stride']! + 7977.707) * (0.9 * myInfo['weight']! / 15));
         myInfo['calories'] = (myCalories * 100).round() / 100;
         myInfo['trees'] = ((myInfo['steps']! / 123) * 100).round() / 100;
         myInfo['CO2'] = (myInfo['steps']! * 0.0147 * 100).round() / 100;
-        print(myInfo['steps']);
       });
     });
   }
@@ -92,10 +69,7 @@ class _HomeViewState extends State<HomeView> {
   Future<void> _getGreenLight() async {
     db.collection('greenlights').get().then((greenlight) {
       setState(() {
-        print('제발요');
-        print(myLoca);
         for (int i = 0; i < greenlight.docs.length; i++){
-          print(i);
           var newGreenlight = greenlight.docs[i];
           var compareDist = calculateDistance(myLoca!.latitude, myLoca!.longitude, newGreenlight['lat'], newGreenlight['lng']);
           if (compareDist < near[0]) {
@@ -112,88 +86,26 @@ class _HomeViewState extends State<HomeView> {
             dist[1] = distCalcul(near[1]);
           }
         }
-        print('사람살려2');
-        print(textValue[0]);
         if (near[1] == double.infinity) {
           near.removeAt(1);
         }
         if (near[0] == double.infinity) {
           near.removeAt(0);
         }
-        print('사람살려');
-        print(near[0]);
         time[0] = timeCalcul(near[0]*1000.toDouble());
         time[1] = timeCalcul(near[1]*1000.toDouble());
-        print(time[0]);
       });
     });
 }
 
-  // steps 가져오기
-  // Future<Map<String, num>> get info async {
-  //   var info = Map<String, num> ();
-  //   var db = FirebaseFirestore.instance;
-  //   QuerySnapshot<Map<String, dynamic>> users = await db.collection('users').get();
-  //   for (int i = 0; i < users.size; i++) {
-  //     if (users.docs[i]['uid'] == widget.uid) {
-  //       info['steps'] = users.docs[i]['steps'];
-  //       info['height']= users.docs[i]['height'];
-  //       info['weight'] = users.docs[i]['weight'];
-  //       info['null'] = 0;
-  //       return info;
-  //     }
-  //   }
-  //   info['null'] = 1;
-  //   return info;
-  // }
-
   @override
   void initState() {
     super.initState();
-
-    // widget.location.then((value) {
-    //   setState(() {
-    //     myLoca = value!;
-    //   });
-    // });
-    // }).then((value) async {
-    //   greenlight = await db.collection('greenlights').get();
-    // }).then((value) {
-    //   for (int i = 0; i < greenlight!.size; i++){
-    //     print(greenlight!.docs[i]['message']);
-    //     var newGreenlight = greenlight!.docs[i];
-    //     var compareDist = calculateDistance(myLoca!.latitude, myLoca!.longitude, newGreenlight['lat'], newGreenlight['lng']);
-    //     if (compareDist < near[0]) {
-    //       near[0] = compareDist;
-    //       index[0] = i;
-    //       textValue[0] = greenlight!.docs[i]['message'];
-    //       dist[0] = distCalcul(near[0]);
-    //     } else if (compareDist >= near[0] && compareDist < near[1]) {
-    //       near[1] = compareDist;
-    //       index[1] = i;
-    //       textValue[1] = greenlight!.docs[i]['message'];
-    //       dist[1] = distCalcul(near[1]);
-    //     }
-    //   }
-    // }).then((value) {
-    //   if (near[1] == double.infinity) {
-    //     near.removeAt(1);
-    //   }
-    //   if (near[0] == double.infinity) {
-    //     near.removeAt(0);
-    //   }
-    // });
     _getUserInfo().then((value) {
       _getMyLoca();
     }).then((value) {
-      info();
-    }).then((value) {
       _getGreenLight();
     });
-    // _getUserInfo();
-    // _getMyLoca();
-    // info();
-    // _getGreenLight();
   }
 
   String distCalcul(double dist) {
@@ -247,19 +159,6 @@ class _HomeViewState extends State<HomeView> {
     // 3. tree - step / 123 (소숫점까지 표시)
     // 4. CO2 - step * 0.0147kg
 
-    // info.then((value) {
-    //   myInfo = value!;
-    //   myInfo['stride'] = myInfo['height']! * 0.45 / 100;
-    //   double myCalories = (myInfo['stride']! * myInfo['steps']! * 60) / ((-3685.1683 * myInfo['stride']! + 7977.707) * (0.9 * myInfo['weight']! / 15));
-    //   myInfo['calories'] = (myCalories * 100).round() / 100;
-    //   myInfo['trees'] = ((myInfo['steps']! / 123) * 100).round() / 100;
-    //   myInfo['CO2'] = (myInfo['steps']! * 0.0147 * 100).round() / 100;
-    // }).then((value) {
-    //   time[0] = timeCalcul(near[0]);
-    //   time[1] = timeCalcul(near[1]);
-    // });
-    print(myInfo['steps']);
-
     return SafeArea(
       child: Scaffold(
         endDrawer: DrawerView(userName: userName),
@@ -278,29 +177,13 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
     );
-
-    // return Scaffold(
-    //   backgroundColor: const Color(0xffF5F5F5),
-    //   body: Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: <Widget> [
-    //       _buildFeedTop1(),
-    //       // today
-    //       today(),
-    //       redLight(),
-    //
-    //       // greenlight
-    //
-    //     ],
-    //   ),
-    // );
   }
 
   Widget _buildFeedTop1() {
     return Builder(
         builder: (context) {
           return Container(
-            margin: EdgeInsets.only(top: 18, left: 330, right: 24),
+            margin: EdgeInsets.only(top: 19.5, right: 17),
             child: IconButton(
               iconSize: 30,
               alignment: Alignment.centerRight,
@@ -322,7 +205,7 @@ class _HomeViewState extends State<HomeView> {
   // L treeAndCo2 widget
   Widget today() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget> [
         todayText(),
         stepAndCalorie(),
@@ -332,13 +215,17 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget todayText() {
-    return Container(
-      child: Text(
-        "Today",
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-      ),
-      // top 68이었음
-      margin: EdgeInsets.only(left: 24, top: 15),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          child: Text("Today",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          ),
+          // top 68이었음
+          margin: EdgeInsets.only(left: 36, top: 15),
+        )
+      ]
     );
   }
 
@@ -346,7 +233,7 @@ class _HomeViewState extends State<HomeView> {
     return Container(
       width: 342,
       height: 82,
-      margin: EdgeInsets.only(left: 24, top: 20),
+      margin: EdgeInsets.only(top: 16),
       decoration: BoxDecoration(
           color: const Color(0xffFFFFFF),
           shape: BoxShape.rectangle,
@@ -417,12 +304,13 @@ class _HomeViewState extends State<HomeView> {
 
   Widget treeAndCo2() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         //tree
         Container(
           width: 165,
           height: 165,
-          margin: EdgeInsets.only(left: 24, top: 12),
+          margin: EdgeInsets.only(right: 8, top: 16),
           decoration: BoxDecoration(
               color: const Color(0xffFFFFFF),
               shape: BoxShape.rectangle,
@@ -469,7 +357,7 @@ class _HomeViewState extends State<HomeView> {
         Container(
           width: 165,
           height: 165,
-          margin: EdgeInsets.only(left: 12, top: 12),
+          margin: EdgeInsets.only(left: 8, top: 16),
           decoration: BoxDecoration(
               color: const Color(0xff80CA4C),
               shape: BoxShape.rectangle,
@@ -522,7 +410,7 @@ class _HomeViewState extends State<HomeView> {
   // L secondLight widget
   Widget redLight() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget> [
         redLightText(),
         firstLight(),
@@ -532,12 +420,17 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget redLightText() {
-    return Container(
-      child: Text(
-        "Red Light",
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-      ),
-      margin: EdgeInsets.only(left: 24, top: 48),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          child: Text(
+          "Red Light",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          ),
+          margin: EdgeInsets.only(left: 36, top: 48),
+        )
+      ],
     );
   }
 
@@ -545,7 +438,7 @@ class _HomeViewState extends State<HomeView> {
     return Container(
       width: 342,
       height: 120,
-      margin: EdgeInsets.only(left: 24, top: 20),
+      margin: EdgeInsets.only(top: 16),
       decoration: BoxDecoration(
           color: const Color(0xffE6726C),
           shape: BoxShape.rectangle,
@@ -594,7 +487,7 @@ class _HomeViewState extends State<HomeView> {
     return Container(
       width: 342,
       height: 120,
-      margin: EdgeInsets.only(left: 24, top: 15),
+      margin: EdgeInsets.only(top: 15),
       decoration: BoxDecoration(
           color: const Color(0xffFFFFFF),
           shape: BoxShape.rectangle,

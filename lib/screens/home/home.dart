@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_light/screens/home/feedview.dart';
 import 'package:green_light/screens/home/groupview.dart';
 import 'package:green_light/screens/home/homeview.dart';
+import 'package:green_light/screens/home/realgroupview.dart';
 import 'package:green_light/screens/home/mapview_for_device.dart';
 import 'package:green_light/services/auth.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +52,7 @@ class _HomeState extends State<Home> {
   HomeView(location: location, uid: uid),
   FeedPage(),
   MapView(showMarkers: markers),
-  GroupPage(),
+  RealGroupView(),
   ];
 
   void _onItemTapped(int index) {
