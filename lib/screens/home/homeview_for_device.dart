@@ -22,6 +22,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   GL_User? user;
+  DocumentReference<Map<String, dynamic>>? userRef;
   List<double> near = [10000.0, 10000.0];
   List<int> index = [-1, -1];
   List<String> textValue = ['', ''];
@@ -48,8 +49,8 @@ class _HomeViewState extends State<HomeView> {
   Future<void> _getUserInfo() async {
     GL_User? user = Provider.of<GL_User?>(context, listen: false);
     db.collection("users").where('uid', isEqualTo: user!.uid).get().then((userData) {
-
       setState(() {
+        userRef = userData.docs[0].reference;
         userName = userData.docs[0].data()['nickname'];
         dateTime = userData.docs[0].data()['date_of_birth'];
         height = userData.docs[0].data()['height'];
@@ -137,6 +138,7 @@ class _HomeViewState extends State<HomeView> {
             final calories = (myCalories * 100).round() / 100;
             final trees = ((steps / 123) * 100).round() / 100;
             final CO2 = (steps * 0.0147 * 100).round() / 100;
+            userRef!.update({"steps": steps});
 
             return SafeArea(
               child: Scaffold(

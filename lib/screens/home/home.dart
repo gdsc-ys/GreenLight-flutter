@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:green_light/models/map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:green_light/screens/home/feedview.dart';
-import 'package:green_light/screens/home/groupview_sm.dart';
+import 'package:green_light/screens/home/groupview.dart';
 import 'package:green_light/screens/home/homeview_for_device.dart';
 import 'package:green_light/screens/home/mapview_for_device.dart';
 import 'package:provider/provider.dart';
@@ -39,35 +39,30 @@ class _HomeState extends State<Home> {
     });
   }
 
-  // We initially planned to use garbagecan data
+  // We initially planned to use garbage can data
   // But it has somewhat postponed until now
   static Future<Set<Marker>> get markers async {
     var db = FirebaseFirestore.instance;
-    Set<Marker> _showMarkers = {};
+    Set<Marker> showMarkers = {};
     QuerySnapshot<Map<String, dynamic>> garbages = await db.collection('garbages2').get();
 
-    BitmapDescriptor garbage_box = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
+    BitmapDescriptor garbageBox = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(),
       "assets/images/recycle-symbol.png"
-    );
-
-    BitmapDescriptor redLight= await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(),
-      "assets/images/redspot.png"
     );
 
     for (int i = 0; i < garbages.size; i++){
       debugPrint(garbages.docs[i]['name']);
-      _showMarkers.add(
+      showMarkers.add(
         Marker(
           markerId: MarkerId(garbages.docs[i]['name']),
           position: LatLng(garbages.docs[i]['lat'], garbages.docs[i]['lng']),
-          icon: garbage_box,
+          icon: garbageBox,
         )
       );
     }
 
-    return _showMarkers;
+    return showMarkers;
   }
 
   // an index for under bar

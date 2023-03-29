@@ -435,7 +435,7 @@ Widget _achievementContent(int container, int greenLight, int reporting, int tum
 
 Widget _greenlight(int greenLight) {
   return Container(
-    margin: EdgeInsets.only(top: 29.h, left: 22.w),
+    margin: EdgeInsets.only(top: 29.h, left: 100.w),
     child: Column(
       children: <Widget>[
         SizedBox(
@@ -453,9 +453,9 @@ Widget _greenlight(int greenLight) {
                   borderThickness: 4,
                   borderColor: const Color(0xff5DC86C),
                 ),
-                child: SizedBox(
-                  width: 63.w,
-                  height: 63.h,
+                child: const SizedBox(
+                  width: 60,
+                  height: 60,
                 )
               ),
             ],
@@ -521,8 +521,8 @@ Widget _reporting(int reporting) {
                     borderColor: const Color(0xff5DC86C),
                   ),
                   child: const SizedBox(
-                    width: 63,
-                    height: 63,
+                    width: 60,
+                    height: 60,
                   )
               ),
             ],

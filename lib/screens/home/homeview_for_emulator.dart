@@ -159,7 +159,7 @@ class _HomeViewState extends State<HomeView> {
     return Builder(
         builder: (context) {
           return Container(
-            margin: EdgeInsets.only(top: 18.h, left: 330.w, right: 24.w),
+            margin: EdgeInsets.only(top: 19.5.h, right: 17.w),
             child: IconButton(
               iconSize: 30,
               alignment: Alignment.centerRight,
@@ -181,7 +181,7 @@ class _HomeViewState extends State<HomeView> {
   // L treeAndCo2 widget
   Widget today(int steps, double calories, double trees, double CO2) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget> [
         todayText(),
         stepAndCalorie(steps, calories),
@@ -191,12 +191,17 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget todayText() {
-    return Container(
-      margin: EdgeInsets.only(left: 24.w, top: 15.h),
-      child: const Text(
-        "Today",
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 36.w, top: 15.h),
+          child: const Text(
+            "Today",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
     );
   }
 
@@ -204,7 +209,7 @@ class _HomeViewState extends State<HomeView> {
     return Container(
       width: 342.w,
       height: 82.h,
-      margin: EdgeInsets.only(left: 24.w, top: 20.h),
+      margin: EdgeInsets.only(top: 16.h),
       decoration: BoxDecoration(
           color: const Color(0xffFFFFFF),
           shape: BoxShape.rectangle,
@@ -277,12 +282,13 @@ class _HomeViewState extends State<HomeView> {
 
   Widget treeAndCo2(double trees, double CO2) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         //tree
         Container(
           width: 165.w,
           height: 165.h,
-          margin: EdgeInsets.only(left: 24.w, top: 12.h),
+          margin: EdgeInsets.only(left: 8.w, top: 16.h),
           decoration: BoxDecoration(
               color: const Color(0xffFFFFFF),
               shape: BoxShape.rectangle,
@@ -329,7 +335,7 @@ class _HomeViewState extends State<HomeView> {
         Container(
           width: 165.w,
           height: 165.h,
-          margin: EdgeInsets.only(left: 12.w, top: 12.h),
+          margin: EdgeInsets.only(left: 8.w, top: 16.h),
           decoration: BoxDecoration(
               color: const Color(0xff80CA4C),
               shape: BoxShape.rectangle,
@@ -422,7 +428,7 @@ class _HomeViewState extends State<HomeView> {
         time[0] = timeCalcul(near[0]*1000.toDouble(), stride);
         time[1] = timeCalcul(near[1]*1000.toDouble(), stride);
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget> [
             redLightText(),
             firstLight(),
@@ -434,12 +440,17 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget redLightText() {
-    return Container(
-      margin: EdgeInsets.only(left: 24.w, top: 48.h),
-      child: const Text(
-        "Red Light",
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 36.w, top: 48.h),
+          child: const Text(
+            "Red Light",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
     );
   }
 
@@ -447,7 +458,7 @@ class _HomeViewState extends State<HomeView> {
     return imgURL[0] == ''? const Loading(): Container(
       width: 342.w,
       height: 120.h,
-      margin: EdgeInsets.only(left: 24.w, top: 20.h),
+      margin: EdgeInsets.only(top: 16.h),
       decoration: BoxDecoration(
           color: const Color(0xffE6726C),
           shape: BoxShape.rectangle,
@@ -499,7 +510,7 @@ class _HomeViewState extends State<HomeView> {
     return imgURL[1] == '' ? const Loading(): Container(
       width: 342.w,
       height: 120.h,
-      margin: EdgeInsets.only(left: 24.w, top: 15.h),
+      margin: EdgeInsets.only(top: 15.h),
       decoration: BoxDecoration(
           color: const Color(0xffFFFFFF),
           shape: BoxShape.rectangle,
