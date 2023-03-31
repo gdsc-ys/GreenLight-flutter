@@ -69,11 +69,11 @@ Here are several tables for our database.
 
 ##### Overall components of the app.
 
-![Start the app](opening.gif)
+![Start the app](openapp.gif)
 
 ##### Getting an information of a red light on Home view.
 
-![Home view](noticing redlights.gif)
+![Home view](redlights.gif)
 
 ##### Making a red light to a green light activity on the map.
 
