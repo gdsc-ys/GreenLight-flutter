@@ -67,4 +67,18 @@ Here are several tables for our database.
 
 ### 5. Actual app running shots
 
-완성되면 올릴게요~
+##### Overall components of the app.
+
+![Start the app](opening.gif)
+
+##### Getting an information of a red light on Home view.
+
+![Home view](noticing redlights.gif)
+
+##### Making a red light to a green light activity on the map.
+
+![Map view](form.gif)
+
+##### The output of filling in the form.
+
+![After Map view](greenlights.gif)

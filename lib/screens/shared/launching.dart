@@ -16,12 +16,12 @@ class Launching extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: SafeArea(
           child: Scaffold(
-            backgroundColor: Colors.lightGreen,
+            backgroundColor: Colors.white,
             // backgroundColor: Colors.black,
             body: Container(
               margin: EdgeInsets.only(left: 137.w, top: 374.h),
               child: Image.asset(
-                "assets/images/co2_image.png",
+                "assets/images/logo.png",
                 width: 96.w,
                 height: 96.h,
               ),

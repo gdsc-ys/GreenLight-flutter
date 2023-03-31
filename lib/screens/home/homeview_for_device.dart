@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:green_light/screens/home/drawerview.dart';
@@ -408,14 +409,15 @@ class _HomeViewState extends State<HomeView> {
         for (int i = 0; i < documents.length; i++){
           var newGreenlight = documents[i];
           var compareDist = calculateDistance(myLoc.latitude, myLoc.longitude, newGreenlight['lat'], newGreenlight['lng']);
-          if (documents[i]['visit'] < 2 && compareDist < near[0]) {
+          
+          if (documents[i]['visit'] < 2 && compareDist <= near[0]) {
             near[0] = compareDist;
             index[0] = i;
             textValue[0] = documents[i]['message'];
             dist[0] = distCalcul(near[0]);
             imgURL[0] = documents[i]['imageURL'];
             address[0] = documents[i]['address'];
-          } else if (index[0] != i && documents[i]['visit'] < 2 && compareDist >= near[0] && compareDist < near[1]) {
+          } else if (index[0] != i && documents[i]['visit'] < 2 && compareDist >= near[0] && compareDist <= near[1]) {
             near[1] = compareDist;
             index[1] = i;
             textValue[1] = documents[i]['message'];
@@ -484,8 +486,10 @@ class _HomeViewState extends State<HomeView> {
             margin: EdgeInsets.only(left: 12.w),
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-              child: Image.network(
-                imgURL[0],
+              child: CachedNetworkImage(
+                imageUrl: imgURL[0],
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
                 width: 96.w,
                 height: 96.h,
                 fit: BoxFit.fill,
@@ -536,8 +540,10 @@ class _HomeViewState extends State<HomeView> {
             margin: EdgeInsets.only(left: 12.w),
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-              child: Image.network(
-                imgURL[1],
+              child: CachedNetworkImage(
+                imageUrl: imgURL[1],
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
                 width: 96.w,
                 height: 96.h,
                 fit: BoxFit.fill,
