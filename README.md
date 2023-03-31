@@ -4,6 +4,10 @@
 ## But ridiculuously, the designers designed it with iPhone 14's size.
 ## We are going to modify those non-senses later.
 
+## Don't forget to add your own google map api key inside 
+## \GreenLight-flutter\android\app\src\main\AndroidManifest.xml file.
+
+
 ### 1. Set up
 
 > * You must have installed flutter yourself in window, mac or other environments.
@@ -18,6 +22,8 @@
 ```flutterfire configure```
 
 ```flutter pub add firebase_core```
+
+```flutter run``` or debug yourself with your IDE and I strongly recommend you to run with Android emulator or real device.
 
 ## Make sure that your firestore structure must follow ours if you want to run this app without amendings.
 
