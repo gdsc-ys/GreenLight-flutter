@@ -23,7 +23,7 @@
 
 ```flutter pub add firebase_core```
 
-```flutter run``` or debug yourself with your IDE and I strongly recommend you to run with Android emulator or real device.
+```flutter run``` or debug yourself with your IDE and I strongly recommend you to run with Android emulators or real devices.
 
 ## Make sure that your firestore structure must follow ours if you want to run this app without amendings.
 
